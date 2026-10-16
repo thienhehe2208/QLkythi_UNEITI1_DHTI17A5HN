@@ -1,0 +1,100 @@
+ @model QuanLyKyThi_UNETI1_TI17A5HN.Models.KyThi
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Sửa kỳ thi";
+    var chungChiList = ViewBag.MaChungChi as SelectList;
+}
+
+<div class="container mt-4">
+    <h2>Sửa thông tin kỳ thi</h2>
+    <hr />
+
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="MaKyThi" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="TenKyThi" class="form-label"></label>
+            <input asp-for="TenKyThi" class="form-control" />
+            <span asp-validation-for="TenKyThi" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MaChungChi" class="form-label"></label>
+            <select asp-for="MaChungChi"
+                    asp-items="chungChiList"
+                    class="form-select">
+                <option value="">-- Chọn chứng chỉ --</option>
+            </select>
+            <span asp-validation-for="MaChungChi" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="SoChoThiToiDa" class="form-label"></label>
+            <input asp-for="SoChoThiToiDa" type="number" min="1"
+                   class="form-control" />
+            <span asp-validation-for="SoChoThiToiDa" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CapDoThi" class="form-label"></label>
+            <input asp-for="CapDoThi" class="form-control" />
+            <span asp-validation-for="CapDoThi" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DiemDauVaoToiThieu" class="form-label"></label>
+            <input asp-for="DiemDauVaoToiThieu" type="number"
+                   min="0" step="0.01" class="form-control" />
+            <span asp-validation-for="DiemDauVaoToiThieu" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="NgayBatDauDangKy" class="form-label"></label>
+            <input asp-for="NgayBatDauDangKy" type="date" class="form-control" />
+            <span asp-validation-for="NgayBatDauDangKy" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="HanDangKy" class="form-label"></label>
+            <input asp-for="HanDangKy" type="date" class="form-control" />
+            <span asp-validation-for="HanDangKy" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MoTaKyThi" class="form-label"></label>
+            <textarea asp-for="MoTaKyThi" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="MoTaKyThi" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DieuKienDuThi" class="form-label"></label>
+            <textarea asp-for="DieuKienDuThi" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="DieuKienDuThi" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="TrangThai" class="form-label"></label>
+            <select asp-for="TrangThai" class="form-select">
+                <option value="Chưa mở">Chưa mở</option>
+                <option value="Đang mở đăng ký">Đang mở đăng ký</option>
+                <option value="Tạm dừng">Tạm dừng</option>
+                <option value="Đã đóng">Đã đóng</option>
+            </select>
+            <span asp-validation-for="TrangThai" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,52 @@
+ @model QuanLyKyThi_UNETI1_TI17A5HN.Models.KyThi
+
+@{
+    ViewData["Title"] = "Chi tiết kỳ thi";
+}
+
+<div class="container mt-4">
+    <h2>Chi tiết kỳ thi</h2>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-4">Mã kỳ thi</dt>
+        <dd class="col-sm-8">@Model.MaKyThi</dd>
+
+        <dt class="col-sm-4">Tên kỳ thi</dt>
+        <dd class="col-sm-8">@Model.TenKyThi</dd>
+
+        <dt class="col-sm-4">Mã chứng chỉ</dt>
+        <dd class="col-sm-8">@Model.MaChungChi</dd>
+
+        <dt class="col-sm-4">Số chỗ thi tối đa</dt>
+        <dd class="col-sm-8">@Model.SoChoThiToiDa</dd>
+
+        <dt class="col-sm-4">Cấp độ thi</dt>
+        <dd class="col-sm-8">@Model.CapDoThi</dd>
+
+        <dt class="col-sm-4">Điểm đầu vào tối thiểu</dt>
+        <dd class="col-sm-8">@Model.DiemDauVaoToiThieu</dd>
+
+        <dt class="col-sm-4">Ngày bắt đầu đăng ký</dt>
+        <dd class="col-sm-8">@Model.NgayBatDauDangKy.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-4">Hạn đăng ký</dt>
+        <dd class="col-sm-8">@Model.HanDangKy.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-4">Mô tả kỳ thi</dt>
+        <dd class="col-sm-8">@(Model.MoTaKyThi ?? "Chưa có mô tả")</dd>
+
+        <dt class="col-sm-4">Điều kiện dự thi</dt>
+        <dd class="col-sm-8">@(Model.DieuKienDuThi ?? "Chưa có thông tin")</dd>
+
+        <dt class="col-sm-4">Trạng thái</dt>
+        <dd class="col-sm-8">@Model.TrangThai</dd>
+    </dl>
+
+    <a asp-action="Edit"
+       asp-route-id="@Model.MaKyThi"
+       class="btn btn-warning">Sửa kỳ thi</a>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">Quay lại danh sách</a>
+</div>

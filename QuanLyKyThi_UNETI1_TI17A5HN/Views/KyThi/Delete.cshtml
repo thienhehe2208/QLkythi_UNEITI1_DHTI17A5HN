@@ -1,0 +1,43 @@
+ @model QuanLyKyThi_UNETI1_TI17A5HN.Models.KyThi
+
+@{
+    ViewData["Title"] = "Xóa kỳ thi";
+}
+
+<div class="container mt-4">
+    <h2>Xóa kỳ thi</h2>
+
+    <div class="alert alert-warning">
+        Bạn có chắc chắn muốn xóa kỳ thi này không?
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-4">Mã kỳ thi</dt>
+        <dd class="col-sm-8">@Model.MaKyThi</dd>
+
+        <dt class="col-sm-4">Tên kỳ thi</dt>
+        <dd class="col-sm-8">@Model.TenKyThi</dd>
+
+        <dt class="col-sm-4">Mã chứng chỉ</dt>
+        <dd class="col-sm-8">@Model.MaChungChi</dd>
+
+        <dt class="col-sm-4">Số chỗ thi tối đa</dt>
+        <dd class="col-sm-8">@Model.SoChoThiToiDa</dd>
+
+        <dt class="col-sm-4">Trạng thái</dt>
+        <dd class="col-sm-8">@Model.TrangThai</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="MaKyThi" />
+
+        <button type="submit" class="btn btn-danger">
+            Xác nhận xóa
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Hủy
+        </a>
+    </form>
+</div>
