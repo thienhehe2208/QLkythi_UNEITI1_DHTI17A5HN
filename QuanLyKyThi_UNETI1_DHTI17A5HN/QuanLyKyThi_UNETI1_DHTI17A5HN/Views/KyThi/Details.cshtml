@@ -1,0 +1,49 @@
+@* Module 2 - Nguyễn Tiến Quang. Mã sinh viên cần bổ sung theo bảng phân công. *@
+@model KyThi
+@{
+    ViewData["Title"] = Model.TenKyThi;
+    var laQuanLy = ViewBag.LaQuanLy as bool? ?? false;
+    var soHoSo = ViewBag.SoHoSo as int? ?? 0;
+    var soGiuCho = ViewBag.SoGiuCho as int? ?? 0;
+    var dangNhan = ViewBag.DangNhanDangKy as bool? ?? false;
+}
+
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a asp-action="Index">Kỳ thi</a></li><li class="breadcrumb-item active">Chi tiết</li></ol></nav>
+        <div class="d-flex flex-wrap align-items-center gap-2"><h1>@Model.TenKyThi</h1><partial name="_BadgeTrangThai" model="Model.TrangThai" /></div>
+        <p class="page-subtitle">@Model.ChungChi?.TenChungChi · @Model.CapDoThi</p>
+    </div>
+    @if (laQuanLy) { <a asp-action="Edit" asp-route-id="@Model.MaKyThi" class="btn btn-primary"><i class="bi bi-pencil"></i>Sửa</a> }
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card"><div class="card-header">Thông tin kỳ thi</div><div class="card-body py-1"><dl class="info-list">
+            <div class="row"><dt class="col-sm-4">Chứng chỉ</dt><dd class="col-sm-8">@Model.ChungChi?.TenChungChi</dd></div>
+            <div class="row"><dt class="col-sm-4">Cấp độ</dt><dd class="col-sm-8">@Model.CapDoThi</dd></div>
+            <div class="row"><dt class="col-sm-4">Điểm đầu vào tối thiểu</dt><dd class="col-sm-8">@Model.DiemDauVaoToiThieu</dd></div>
+            <div class="row"><dt class="col-sm-4">Thời gian nhận hồ sơ</dt><dd class="col-sm-8">@Model.NgayBatDauDangKy.ToString("dd/MM/yyyy HH:mm") – @Model.HanDangKy.ToString("dd/MM/yyyy HH:mm")</dd></div>
+            <div class="row"><dt class="col-sm-4">Tình trạng tiếp nhận</dt><dd class="col-sm-8"><strong class="@(dangNhan ? "text-success" : "text-muted")">@(dangNhan ? "Đang nhận hồ sơ" : "Không nhận hồ sơ")</strong></dd></div>
+            <div class="row"><dt class="col-sm-4">Mô tả</dt><dd class="col-sm-8" style="white-space:pre-line">@(Model.MoTaKyThi ?? "Chưa cập nhật")</dd></div>
+            <div class="row"><dt class="col-sm-4">Điều kiện dự thi</dt><dd class="col-sm-8" style="white-space:pre-line">@(Model.DieuKienDuThi ?? "Chưa cập nhật")</dd></div>
+        </dl></div></div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card mb-3"><div class="card-body">
+            <div class="stat-card mb-3"><div class="stat-icon tone-blue"><i class="bi bi-people"></i></div><div><div class="stat-value">@soGiuCho/@Model.SoChoThiToiDa</div><div class="stat-label">Đang giữ chỗ / tối đa</div></div></div>
+            <div class="text-muted small">Tổng cộng @soHoSo hồ sơ liên quan.</div>
+        </div></div>
+        @if (laQuanLy)
+        {
+            <div class="card mb-3"><div class="card-header">Cập nhật trạng thái</div><div class="card-body">
+                <form asp-action="CapNhatTrangThai" asp-route-id="@Model.MaKyThi" method="post" class="d-flex gap-2">
+                    <select name="trangThai" class="form-select" asp-items="Html.GetEnumSelectList<TrangThaiKyThi>()"><option value="@Model.TrangThai" selected hidden>@Model.TrangThai.HienThi()</option></select>
+                    <button class="btn btn-primary" type="submit">Lưu</button>
+                </form>
+            </div></div>
+            @if (soHoSo == 0) { <a asp-action="Delete" asp-route-id="@Model.MaKyThi" class="btn btn-outline-danger w-100"><i class="bi bi-trash"></i>Xóa kỳ thi</a> }
+        }
+    </div>
+</div>
+<a asp-action="Index" class="btn btn-link px-0 mt-3"><i class="bi bi-arrow-left"></i>Quay lại danh sách</a>

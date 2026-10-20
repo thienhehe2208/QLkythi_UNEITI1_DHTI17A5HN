@@ -1,0 +1,25 @@
+@model ThiSinhFormViewModel
+@{
+    ViewData["Title"] = Model.MaThiSinh == 0 ? "Hoàn thiện thông tin" : "Cập nhật thí sinh";
+    var laThiSinh = Context.Session.LaVaiTro(VaiTro.ThiSinh);
+}
+<div class="page-header"><div><h1>@ViewData["Title"]</h1><p class="page-subtitle">Thông tin này được dùng khi nộp hồ sơ đăng ký dự thi.</p></div></div>
+<form asp-action="Edit" method="post" class="card" style="max-width:960px">
+    <input asp-for="MaThiSinh" type="hidden" />
+    <div class="card-body"><div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div><div class="row g-3">
+        <div class="col-md-8"><label asp-for="HoTen" class="form-label required"></label><input asp-for="HoTen" class="form-control" /><span asp-validation-for="HoTen" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="NgaySinh" class="form-label required"></label><input asp-for="NgaySinh" type="date" class="form-control" /><span asp-validation-for="NgaySinh" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="GioiTinh" class="form-label"></label><select asp-for="GioiTinh" asp-items="Html.GetEnumSelectList<GioiTinh>()" class="form-select"></select></div>
+        <div class="col-md-4"><label asp-for="SoDienThoai" class="form-label required"></label><input asp-for="SoDienThoai" class="form-control" /><span asp-validation-for="SoDienThoai" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="Email" class="form-label required"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
+        <div class="col-12"><label asp-for="DiaChi" class="form-label"></label><input asp-for="DiaChi" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="TrinhDoHienTai" class="form-label"></label><input asp-for="TrinhDoHienTai" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="NgheNghiep" class="form-label"></label><input asp-for="NgheNghiep" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="SoLanThiTruocDay" class="form-label"></label><input asp-for="SoLanThiTruocDay" type="number" min="0" class="form-control" /></div>
+        <div class="col-md-8"><label asp-for="ChungChiDaCo" class="form-label"></label><input asp-for="ChungChiDaCo" class="form-control" /></div>
+        @if (!laThiSinh) { <div class="col-md-4"><label asp-for="TrangThai" class="form-label"></label><select asp-for="TrangThai" asp-items="Html.GetEnumSelectList<TrangThaiThiSinh>()" class="form-select"></select></div> }
+    </div></div>
+    <div class="card-footer d-flex justify-content-end gap-2"><a asp-action="@(laThiSinh ? "HoSoCuaToi" : "Index")" class="btn btn-light">Hủy</a><button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i>Lưu thông tin</button></div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+

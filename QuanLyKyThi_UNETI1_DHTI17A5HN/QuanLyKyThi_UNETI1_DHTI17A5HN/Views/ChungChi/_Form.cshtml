@@ -1,0 +1,27 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Các trường nhập liệu dùng chung cho form thêm/sửa chứng chỉ.
+   ============================================================ *@
+@model ChungChiFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+<div class="row g-3">
+    <div class="col-md-7">
+        <label asp-for="TenChungChi" class="form-label required"></label>
+        <input asp-for="TenChungChi" class="form-control" placeholder="vd. Tiếng Anh VSTEP (B1-C1)" />
+        <div class="form-text">Không được trùng với chứng chỉ khác (không phân biệt hoa/thường).</div>
+        <span asp-validation-for="TenChungChi" class="text-danger"></span>
+    </div>
+    <div class="col-md-5">
+        <label asp-for="EmailLienHe" class="form-label"></label>
+        <input asp-for="EmailLienHe" class="form-control" type="email" placeholder="Không bắt buộc" />
+        <span asp-validation-for="EmailLienHe" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="MoTa" class="form-label"></label>
+        <textarea asp-for="MoTa" class="form-control" rows="6" maxlength="1000" placeholder="Giới thiệu, đối tượng dự thi, cấu trúc bài thi..."></textarea>
+        <div class="form-text">Tối đa 1000 ký tự.</div>
+        <span asp-validation-for="MoTa" class="text-danger"></span>
+    </div>
+</div>

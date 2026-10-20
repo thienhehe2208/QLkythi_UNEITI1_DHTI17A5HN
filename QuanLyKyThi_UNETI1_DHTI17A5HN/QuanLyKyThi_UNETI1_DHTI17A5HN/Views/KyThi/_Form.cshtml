@@ -1,0 +1,53 @@
+@* Module 2 - Nguyễn Tiến Quang. Mã sinh viên cần bổ sung theo bảng phân công. *@
+@model KyThiFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+<div class="row g-3">
+    <div class="col-md-8">
+        <label asp-for="TenKyThi" class="form-label required"></label>
+        <input asp-for="TenKyThi" class="form-control" placeholder="Tên kỳ thi" />
+        <span asp-validation-for="TenKyThi" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="MaChungChi" class="form-label required"></label>
+        <select asp-for="MaChungChi" asp-items="ViewBag.DanhSachChungChi" class="form-select">
+            <option value="0">-- Chọn chứng chỉ --</option>
+        </select>
+        <span asp-validation-for="MaChungChi" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="CapDoThi" class="form-label required"></label>
+        <input asp-for="CapDoThi" class="form-control" placeholder="vd. B1, Nâng cao" />
+        <span asp-validation-for="CapDoThi" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="SoChoThiToiDa" class="form-label required"></label>
+        <input asp-for="SoChoThiToiDa" type="number" min="1" class="form-control" />
+        <span asp-validation-for="SoChoThiToiDa" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="DiemDauVaoToiThieu" class="form-label"></label>
+        <input asp-for="DiemDauVaoToiThieu" type="number" min="0" max="999.99" step="0.01" class="form-control" />
+        <span asp-validation-for="DiemDauVaoToiThieu" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="NgayBatDauDangKy" class="form-label required"></label>
+        <input asp-for="NgayBatDauDangKy" type="datetime-local" class="form-control" />
+        <span asp-validation-for="NgayBatDauDangKy" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="HanDangKy" class="form-label required"></label>
+        <input asp-for="HanDangKy" type="datetime-local" class="form-control" />
+        <span asp-validation-for="HanDangKy" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="MoTaKyThi" class="form-label"></label>
+        <textarea asp-for="MoTaKyThi" class="form-control" rows="5" maxlength="2000"></textarea>
+        <span asp-validation-for="MoTaKyThi" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="DieuKienDuThi" class="form-label"></label>
+        <textarea asp-for="DieuKienDuThi" class="form-control" rows="5" maxlength="2000"></textarea>
+        <span asp-validation-for="DieuKienDuThi" class="text-danger"></span>
+    </div>
+</div>

@@ -1,0 +1,75 @@
+@* Module 2 - Nguyễn Tiến Quang. Mã sinh viên cần bổ sung theo bảng phân công. *@
+@model KyThiIndexViewModel
+@{
+    ViewData["Title"] = "Kỳ thi";
+    var dsSapXep = new List<SelectListItem>
+    {
+        new("Tên A → Z", "ten_asc"), new("Tên Z → A", "ten_desc"),
+        new("Hạn đăng ký tăng dần", "han_asc"), new("Hạn đăng ký giảm dần", "han_desc"),
+        new("Số chỗ tăng dần", "socho_asc"), new("Số chỗ giảm dần", "socho_desc")
+    };
+    var dsThoiHan = new List<SelectListItem> { new("Còn hạn", "con_han"), new("Hết hạn", "het_han") };
+    var dangLoc = !string.IsNullOrWhiteSpace(Model.TuKhoa) || Model.MaChungChi.HasValue
+        || !string.IsNullOrWhiteSpace(Model.CapDoThi) || Model.TrangThai.HasValue
+        || Model.DiemToiDa.HasValue || !string.IsNullOrWhiteSpace(Model.ThoiHan);
+}
+
+<div class="page-header">
+    <div><h1>Kỳ thi</h1><p class="page-subtitle">Tìm kiếm và theo dõi các kỳ thi chứng chỉ.</p></div>
+    @if (Model.LaQuanLy) { <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Thêm kỳ thi</a> }
+</div>
+
+<div class="card">
+    <form asp-action="Index" method="get" class="filter-bar border-bottom">
+        <div class="row g-2 align-items-end">
+            <div class="col-lg-4">
+                <label asp-for="TuKhoa" class="form-label"></label>
+                <div class="search-input"><i class="bi bi-search"></i><input asp-for="TuKhoa" class="form-control" placeholder="Tên kỳ thi hoặc chứng chỉ" /></div>
+            </div>
+            <div class="col-6 col-lg-2"><label asp-for="MaChungChi" class="form-label"></label><select asp-for="MaChungChi" asp-items="ViewBag.DanhSachChungChi" class="form-select"><option value="">Tất cả</option></select></div>
+            <div class="col-6 col-lg-2"><label asp-for="CapDoThi" class="form-label"></label><select asp-for="CapDoThi" asp-items="ViewBag.DanhSachCapDo" class="form-select"><option value="">Tất cả</option></select></div>
+            <div class="col-6 col-lg-2"><label asp-for="TrangThai" class="form-label"></label><select asp-for="TrangThai" asp-items="Html.GetEnumSelectList<TrangThaiKyThi>()" class="form-select"><option value="">Tất cả</option></select></div>
+            <div class="col-6 col-lg-2"><label asp-for="ThoiHan" class="form-label"></label><select asp-for="ThoiHan" asp-items="dsThoiHan" class="form-select"><option value="">Tất cả</option></select></div>
+            <div class="col-6 col-lg-2"><label asp-for="DiemToiDa" class="form-label"></label><input asp-for="DiemToiDa" type="number" min="0" max="999.99" step="0.01" class="form-control" /></div>
+            <div class="col-6 col-lg-3"><label asp-for="SapXep" class="form-label"></label><select asp-for="SapXep" asp-items="dsSapXep" class="form-select"></select></div>
+            <div class="col-lg-3 d-flex gap-2">
+                <button class="btn btn-primary flex-fill" type="submit"><i class="bi bi-funnel"></i>Lọc</button>
+                @if (dangLoc) { <a asp-action="Index" class="btn btn-light btn-icon" title="Xóa bộ lọc"><i class="bi bi-x-lg"></i></a> }
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.DanhSach.Any())
+    {
+        <div class="empty-state"><i class="bi bi-calendar-x"></i><h2>Không có kỳ thi phù hợp</h2><p>Thử thay đổi điều kiện tìm kiếm hoặc bộ lọc.</p></div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-app table-hover align-middle">
+                <thead><tr><th>Kỳ thi</th><th>Chứng chỉ</th><th class="text-center">Số chỗ</th><th>Hạn đăng ký</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead>
+                <tbody>
+                @foreach (var k in Model.DanhSach)
+                {
+                    <tr>
+                        <td><a asp-action="Details" asp-route-id="@k.MaKyThi" class="title-link">@k.TenKyThi</a><div class="sub">@k.CapDoThi · Điểm yêu cầu @k.DiemDauVaoToiThieu</div></td>
+                        <td>@k.TenChungChi</td>
+                        <td class="text-center">@if (Model.LaQuanLy) { <span>@k.SoHoSo/@k.SoChoThiToiDa</span> } else { <span>@k.SoChoThiToiDa</span> }</td>
+                        <td>@k.HanDangKy.ToString("dd/MM/yyyy HH:mm")<div class="sub">@(k.DangNhanDangKy ? "Đang nhận hồ sơ" : "Không nhận hồ sơ")</div></td>
+                        <td><partial name="_BadgeTrangThai" model="k.TrangThai" /></td>
+                        <td class="text-end"><div class="table-actions">
+                            <a asp-action="Details" asp-route-id="@k.MaKyThi" class="btn btn-light btn-icon" title="Chi tiết"><i class="bi bi-eye"></i></a>
+                            @if (Model.LaQuanLy)
+                            {
+                                <a asp-action="Edit" asp-route-id="@k.MaKyThi" class="btn btn-light btn-icon" title="Sửa"><i class="bi bi-pencil"></i></a>
+                                @if (k.SoHoSo == 0) { <a asp-action="Delete" asp-route-id="@k.MaKyThi" class="btn btn-light btn-icon text-danger" title="Xóa"><i class="bi bi-trash"></i></a> }
+                            }
+                        </div></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+    <div class="card-footer"><partial name="_PhanTrang" model="Model.PhanTrang" /></div>
+</div>

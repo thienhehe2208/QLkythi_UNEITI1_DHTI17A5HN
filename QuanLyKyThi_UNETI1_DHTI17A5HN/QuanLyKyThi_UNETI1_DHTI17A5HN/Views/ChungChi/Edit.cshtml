@@ -1,0 +1,41 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Form sửa chứng chỉ (Admin); trạng thái đổi ở trang chi tiết.
+   ============================================================ *@
+@model ChungChiFormViewModel
+@{
+    ViewData["Title"] = "Sửa chứng chỉ";
+}
+
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Chứng chỉ</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.MaChungChi">@Model.TenChungChi</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Sửa</li>
+            </ol>
+        </nav>
+        <h1>Sửa chứng chỉ</h1>
+    </div>
+    <partial name="_BadgeTrangThai" model="Model.TrangThai" />
+</div>
+
+<form asp-action="Edit" asp-route-id="@Model.MaChungChi" method="post" class="card" style="max-width: 860px">
+    <input type="hidden" asp-for="MaChungChi" />
+    <div class="card-body">
+        <partial name="_Form" model="Model" />
+    </div>
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Trạng thái được thay đổi ở trang chi tiết.</span>
+        <div class="d-flex gap-2">
+            <a asp-action="Details" asp-route-id="@Model.MaChungChi" class="btn btn-light">Hủy</a>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Lưu thay đổi</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

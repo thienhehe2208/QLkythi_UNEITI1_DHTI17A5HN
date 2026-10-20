@@ -1,0 +1,16 @@
+@model ThiSinh
+@{
+    ViewData["Title"] = Model.HoTen;
+    var soHoSo = ViewBag.SoHoSo as int? ?? 0;
+}
+<div class="page-header"><div><h1>@Model.HoTen</h1><p class="page-subtitle">Mã thí sinh: @Model.MaThiSinh · Tài khoản: @Model.TaiKhoan?.TenDangNhap</p></div><a asp-action="Edit" asp-route-id="@Model.MaThiSinh" class="btn btn-primary"><i class="bi bi-pencil"></i>Cập nhật</a></div>
+<div class="row g-3"><div class="col-lg-8"><div class="card"><div class="card-header">Thông tin cá nhân</div><div class="card-body py-1"><dl class="info-list">
+    <div class="row"><dt class="col-sm-4">Ngày sinh / Giới tính</dt><dd class="col-sm-8">@Model.NgaySinh.ToString("dd/MM/yyyy") · @Model.GioiTinh.HienThi()</dd></div>
+    <div class="row"><dt class="col-sm-4">Liên hệ</dt><dd class="col-sm-8">@Model.Email · @Model.SoDienThoai</dd></div>
+    <div class="row"><dt class="col-sm-4">Địa chỉ</dt><dd class="col-sm-8">@(Model.DiaChi ?? "Chưa cập nhật")</dd></div>
+    <div class="row"><dt class="col-sm-4">Trình độ / Nghề nghiệp</dt><dd class="col-sm-8">@(Model.TrinhDoHienTai ?? "Chưa cập nhật") · @(Model.NgheNghiep ?? "Chưa cập nhật")</dd></div>
+    <div class="row"><dt class="col-sm-4">Chứng chỉ đã có</dt><dd class="col-sm-8">@(Model.ChungChiDaCo ?? "Chưa có")</dd></div>
+    <div class="row"><dt class="col-sm-4">Trạng thái</dt><dd class="col-sm-8"><partial name="_BadgeTrangThai" model="Model.TrangThai" /></dd></div>
+</dl></div></div></div>
+<div class="col-lg-4"><div class="card"><div class="card-body"><div class="stat-card"><div class="stat-icon tone-blue"><i class="bi bi-file-earmark-text"></i></div><div><div class="stat-value">@soHoSo</div><div class="stat-label">Hồ sơ đăng ký dự thi</div></div></div><a asp-controller="HoSoDangKy" asp-action="Index" class="btn btn-light w-100 mt-3">Xem hồ sơ đăng ký</a></div></div></div></div>
+

@@ -1,0 +1,219 @@
+/* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Giao diện chung (thanh menu ngang, thẻ, bảng, form, badge trạng thái,
+   trang đăng nhập). Các module khác dùng lại các class ở đây để giao diện đồng nhất.
+   ============================================================ */
+
+:root {
+  --app-topbar-h: 60px;
+  --app-bg: #f4f6fb;
+  --app-surface: #ffffff;
+  --app-border: #e6e9f0;
+  --app-text: #1f2937;
+  --app-muted: #6b7280;
+  --app-primary: #2563eb;
+  --app-primary-soft: #eaf1ff;
+  --app-nav-bg: #0f1b3d;
+  --app-nav-text: #b8c2dc;
+  --app-radius: .75rem;
+  --app-shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 1px 3px rgba(16, 24, 40, .06);
+
+  --bs-body-font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bs-body-color: var(--app-text);
+  --bs-body-bg: #ffffff; /* nền của input, card, modal */
+  --bs-border-color: var(--app-border);
+  --bs-border-radius: .5rem;
+  --bs-link-color-rgb: 37, 99, 235;
+}
+
+html { font-size: 15px; }
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+.btn:hover, .nav-link:hover, .dropdown-item:hover, .page-link:hover, .action-card:hover, .app-brand:hover, .title-link:hover { text-decoration: none; }
+body { background: var(--app-bg); min-height: 100vh; }
+
+.btn-primary {
+  --bs-btn-bg: var(--app-primary);
+  --bs-btn-border-color: var(--app-primary);
+  --bs-btn-hover-bg: #1d4ed8;
+  --bs-btn-hover-border-color: #1d4ed8;
+  --bs-btn-active-bg: #1e40af;
+  --bs-btn-active-border-color: #1e40af;
+}
+.btn { font-weight: 500; }
+.btn .bi { margin-right: .35rem; }
+.btn-icon { width: 2rem; height: 2rem; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+.btn-icon .bi { margin: 0; }
+
+.form-control:focus, .form-select:focus {
+  border-color: #93b4f5;
+  box-shadow: 0 0 0 .2rem rgba(37, 99, 235, .15);
+}
+
+/* ---------------- Thanh menu ngang ---------------- */
+body { display: flex; flex-direction: column; }
+.app-navbar {
+  background: var(--app-nav-bg);
+  min-height: var(--app-topbar-h);
+  padding-top: .4rem; padding-bottom: .4rem;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .04), 0 2px 8px rgba(15, 27, 61, .15);
+}
+.app-brand { display: flex; align-items: center; gap: .65rem; color: #fff; font-weight: 600; margin-right: 1.5rem; }
+.app-brand:hover { color: #fff; }
+.app-brand-logo {
+  width: 34px; height: 34px; border-radius: .6rem;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, #3b82f6, #6366f1); color: #fff; font-size: 1.1rem;
+}
+.app-brand small { display: block; font-weight: 400; font-size: .72rem; color: var(--app-nav-text); line-height: 1.1; }
+
+.app-nav { gap: .25rem; }
+.app-nav .nav-link {
+  display: flex; align-items: center; gap: .5rem;
+  color: var(--app-nav-text) !important; border-radius: .5rem;
+  padding: .5rem .85rem !important; font-weight: 500;
+}
+.app-nav .nav-link .bi { font-size: 1rem; opacity: .85; }
+.app-nav .nav-link:hover { background: rgba(255, 255, 255, .07); color: #fff !important; }
+.app-nav .nav-link.active { background: var(--app-primary); color: #fff !important; }
+@media (max-width: 991.98px) {
+  .app-nav { padding: .75rem 0; }
+  .app-navbar .dropdown { padding-bottom: .5rem; }
+}
+
+.app-content { padding: 1.75rem 0 2.5rem; flex-grow: 1; }
+.app-content > .container-xxl, .app-navbar > .container-xxl, .app-footer > .container-xxl { max-width: 1280px; }
+.app-footer { padding: 1rem 0; font-size: .8rem; color: var(--app-muted); border-top: 1px solid var(--app-border); background: var(--app-surface); }
+
+.user-menu-btn { display: flex; align-items: center; gap: .6rem; border: 0; background: transparent; padding: .3rem .5rem; border-radius: .5rem; color: #fff; }
+.user-menu-btn:hover { background: rgba(255, 255, 255, .07); }
+.user-menu-btn .ten { font-weight: 600; font-size: .88rem; line-height: 1.15; }
+.user-menu-btn .vai-tro { font-size: .74rem; color: var(--app-nav-text); }
+.user-menu-btn .bi-chevron-down { color: var(--app-nav-text); }
+.app-navbar .avatar { background: rgba(255, 255, 255, .12); color: #fff; }
+
+/* Avatar chữ cái đầu */
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: inline-grid; place-items: center; flex-shrink: 0;
+  background: var(--app-primary-soft); color: var(--app-primary);
+  font-weight: 600; font-size: .85rem; text-transform: uppercase;
+}
+.avatar-sm { width: 30px; height: 30px; font-size: .75rem; }
+.avatar-lg { width: 64px; height: 64px; font-size: 1.4rem; }
+
+/* ---------------- Tiêu đề trang ---------------- */
+.page-header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.page-header h1 { font-size: 1.5rem; font-weight: 700; margin: 0; }
+.page-header .page-subtitle { color: var(--app-muted); margin: .25rem 0 0; }
+.breadcrumb { font-size: .82rem; margin-bottom: .35rem; }
+.breadcrumb a { text-decoration: none; }
+
+/* ---------------- Thẻ ---------------- */
+.card { border: 1px solid var(--app-border); border-radius: var(--app-radius); box-shadow: var(--app-shadow); }
+.card-header { background: transparent; border-bottom: 1px solid var(--app-border); padding: 1rem 1.25rem; font-weight: 600; }
+.card-body { padding: 1.25rem; }
+.card-footer { background: #fafbfd; border-top: 1px solid var(--app-border); padding: .9rem 1.25rem; }
+
+.stat-card { display: flex; align-items: center; gap: 1rem; }
+.stat-icon { width: 46px; height: 46px; border-radius: .75rem; display: grid; place-items: center; font-size: 1.35rem; flex-shrink: 0; }
+.stat-value { font-size: 1.6rem; font-weight: 700; line-height: 1; }
+.stat-label { color: var(--app-muted); font-size: .85rem; margin-top: .25rem; }
+
+.action-card { text-decoration: none; color: inherit; transition: transform .15s ease, box-shadow .15s ease; height: 100%; }
+.action-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16, 24, 40, .08); color: inherit; }
+.action-card .stat-icon { margin-bottom: .9rem; }
+
+/* ---------------- Bộ lọc ---------------- */
+.filter-bar { padding: 1rem 1.25rem; }
+.filter-bar .form-label { font-size: .78rem; font-weight: 600; color: var(--app-muted); margin-bottom: .3rem; }
+.search-input { position: relative; }
+.search-input .bi { position: absolute; left: .8rem; top: 50%; transform: translateY(-50%); color: var(--app-muted); }
+.search-input .form-control { padding-left: 2.25rem; }
+
+/* ---------------- Bảng ---------------- */
+.table-app { margin: 0; }
+.table-app > :not(caption) > * > * { padding: .85rem 1.25rem; border-color: var(--app-border); }
+.table-app thead th {
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--app-muted); font-weight: 600; background: #fafbfd; white-space: nowrap;
+}
+.table-app tbody tr:last-child td { border-bottom: 0; }
+.table-app td .title-link { font-weight: 600; text-decoration: none; color: var(--app-text); }
+.table-app td .title-link:hover { color: var(--app-primary); }
+.table-app td .sub { font-size: .8rem; color: var(--app-muted); }
+.table-actions { display: inline-flex; gap: .25rem; }
+
+/* ---------------- Badge trạng thái ---------------- */
+.badge-status {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .3rem .65rem; border-radius: 999px; font-size: .78rem; font-weight: 600; white-space: nowrap;
+}
+.badge-status::before { content: ""; width: .45rem; height: .45rem; border-radius: 50%; background: currentColor; }
+.badge-status.success { background: #e7f7ee; color: #15803d; }
+.badge-status.muted { background: #eef0f4; color: #4b5563; }
+.badge-status.warning { background: #fff5e0; color: #b45309; }
+.badge-status.danger { background: #fdecec; color: #b91c1c; }
+.badge-status.info { background: var(--app-primary-soft); color: var(--app-primary); }
+.badge-soft { background: var(--app-primary-soft); color: var(--app-primary); font-weight: 600; }
+
+/* ---------------- Trạng thái rỗng ---------------- */
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--app-muted); }
+.empty-state .bi { font-size: 2.6rem; color: #c3cad9; display: block; margin-bottom: .75rem; }
+.empty-state h2 { font-size: 1.05rem; color: var(--app-text); font-weight: 600; }
+
+/* ---------------- Form ---------------- */
+.form-label { font-weight: 600; font-size: .88rem; }
+.form-label.required::after { content: " *"; color: #dc2626; }
+.form-text { font-size: .8rem; }
+.input-validation-error { border-color: #dc2626 !important; }
+.field-validation-error { display: block; font-size: .8rem; margin-top: .3rem; }
+.form-section-title { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--app-muted); font-weight: 700; margin-bottom: 1rem; }
+
+/* Danh sách thông tin dạng nhãn - giá trị */
+.info-list { margin: 0; }
+.info-list .row { padding: .75rem 0; border-bottom: 1px dashed var(--app-border); }
+.info-list .row:last-child { border-bottom: 0; }
+.info-list dt { color: var(--app-muted); font-weight: 500; }
+.info-list dd { margin: 0; font-weight: 500; }
+
+/* ---------------- Thông báo nổi ---------------- */
+.toast-container { z-index: 1090; bottom: 0; right: 0; }
+.toast { border: 0; border-radius: .65rem; box-shadow: 0 10px 30px rgba(16, 24, 40, .15); }
+
+/* ---------------- Trang đăng nhập ---------------- */
+.auth-page { min-height: 100vh; display: grid; grid-template-columns: 1fr; background: var(--app-surface); }
+@media (min-width: 992px) { .auth-page { grid-template-columns: 1.1fr 1fr; } }
+.auth-hero {
+  display: none; color: #fff; padding: 3rem;
+  background: radial-gradient(circle at 20% 20%, #3b5bdb 0, transparent 45%),
+              radial-gradient(circle at 80% 80%, #6d28d9 0, transparent 40%),
+              var(--app-nav-bg);
+  flex-direction: column; justify-content: space-between;
+}
+@media (min-width: 992px) { .auth-hero { display: flex; } }
+.auth-hero h1 { font-size: 2rem; font-weight: 700; line-height: 1.25; }
+.auth-hero p { color: #c7d0ea; max-width: 30rem; }
+.auth-feature { display: flex; gap: .75rem; align-items: flex-start; margin-bottom: 1rem; color: #dfe5f5; }
+.auth-feature .bi { font-size: 1.2rem; color: #93b4f5; }
+.auth-form-wrap { display: flex; align-items: center; justify-content: center; padding: 2rem 1.25rem; }
+.auth-form { width: 100%; max-width: 400px; }
+.auth-form h2 { font-weight: 700; font-size: 1.6rem; }
+
+/* Trang lỗi */
+.error-page { text-align: center; padding: 4rem 1rem; }
+.error-page .code { font-size: 4.5rem; font-weight: 800; line-height: 1; color: #c3cad9; }
+
+/* Tông màu cho icon thống kê */
+.tone-blue { background: #eaf1ff; color: #2563eb; }
+.tone-violet { background: #f1ebff; color: #7c3aed; }
+.tone-green { background: #e7f7ee; color: #15803d; }
+.tone-red { background: #fdecec; color: #b91c1c; }
+.tone-amber { background: #fff5e0; color: #b45309; }
+
+/* Phân trang */
+.pagination .page-link { border-radius: .45rem !important; margin: 0 2px; border: 1px solid var(--app-border); color: var(--app-text); min-width: 2rem; text-align: center; }
+.pagination .page-item.active .page-link { background: var(--app-primary); border-color: var(--app-primary); color: #fff; }
+.pagination .page-item.disabled .page-link { color: #b6bdcb; background: transparent; }
+.stat-icon-sm { width: 36px; height: 36px; font-size: 1rem; border-radius: .6rem; }

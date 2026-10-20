@@ -1,0 +1,14 @@
+@model HoSoDangKyIndexViewModel
+@{
+    ViewData["Title"] = Model.LaThiSinh ? "Hồ sơ của tôi" : "Hồ sơ đăng ký";
+}
+<div class="page-header"><div><h1>@ViewData["Title"]</h1><p class="page-subtitle">Theo dõi hồ sơ đăng ký dự thi và trạng thái xử lý.</p></div>@if (Model.LaThiSinh) { <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Đăng ký dự thi</a> }</div>
+<div class="card">
+    <form method="get" class="filter-bar row g-2 align-items-end"><div class="col-md-7"><label class="form-label">Tìm kiếm</label><div class="search-input"><i class="bi bi-search"></i><input name="tuKhoa" value="@Model.TuKhoa" class="form-control" placeholder="Thí sinh, kỳ thi hoặc chứng chỉ" /></div></div><div class="col-md-3"><label class="form-label">Trạng thái</label><select asp-for="TrangThai" class="form-select" asp-items="Html.GetEnumSelectList<TrangThaiHoSo>()"><option value="">Tất cả</option></select></div><div class="col-md-2 d-flex gap-2"><button class="btn btn-primary flex-grow-1">Lọc</button><a asp-action="Index" class="btn btn-light">Xóa</a></div></form>
+    @if (Model.DanhSach.Count == 0) { <div class="empty-state"><i class="bi bi-file-earmark-x"></i><h2>Chưa có hồ sơ phù hợp</h2></div> }
+    else { <div class="table-responsive"><table class="table table-app align-middle"><thead><tr>@if (!Model.LaThiSinh) { <th>Thí sinh</th> }<th>Kỳ thi</th><th>Ngày nộp</th><th>Trạng thái</th><th></th></tr></thead><tbody>
+    @foreach (var h in Model.DanhSach) { <tr>@if (!Model.LaThiSinh) { <td>@h.HoTenThiSinh</td> }<td><a asp-action="Details" asp-route-id="@h.MaHoSo" class="title-link">@h.TenKyThi</a><div class="sub">@h.TenChungChi · HS-@h.MaHoSo</div></td><td>@h.NgayNop.ToString("dd/MM/yyyy HH:mm")</td><td><partial name="_BadgeTrangThai" model="h.TrangThai" /></td><td class="text-end"><a asp-action="Details" asp-route-id="@h.MaHoSo" class="btn btn-light btn-icon"><i class="bi bi-eye"></i></a></td></tr> }
+    </tbody></table></div> }
+    <div class="card-footer"><partial name="_PhanTrang" model="Model.PhanTrang" /></div>
+</div>
+

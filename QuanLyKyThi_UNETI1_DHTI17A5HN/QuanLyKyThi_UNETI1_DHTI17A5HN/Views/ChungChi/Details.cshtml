@@ -1,0 +1,131 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Chi tiết chứng chỉ, các kỳ thi liên quan, cập nhật trạng thái (Admin).
+   ============================================================ *@
+@model ChungChiChiTietViewModel
+@{
+    ViewData["Title"] = Model.TenChungChi;
+    var dangHoatDong = Model.TrangThai == TrangThaiChungChi.DangHoatDong;
+}
+
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Chứng chỉ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Chi tiết</li>
+            </ol>
+        </nav>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <h1>@Model.TenChungChi</h1>
+            <partial name="_BadgeTrangThai" model="Model.TrangThai" />
+        </div>
+    </div>
+    @if (Model.LaAdmin)
+    {
+        <div class="d-flex flex-wrap gap-2">
+            <form asp-action="CapNhatTrangThai" asp-route-id="@Model.MaChungChi" method="post"
+                  data-confirm="@(dangHoatDong ? "Ngừng hoạt động chứng chỉ này? Chứng chỉ sẽ không còn hiển thị với thí sinh và cán bộ." : "Kích hoạt lại chứng chỉ này?")"
+                  data-confirm-ok="@(dangHoatDong ? "Ngừng hoạt động" : "Kích hoạt")"
+                  data-confirm-variant="@(dangHoatDong ? "btn-warning" : "btn-success")">
+                <input type="hidden" name="trangThai" value="@(dangHoatDong ? TrangThaiChungChi.NgungHoatDong : TrangThaiChungChi.DangHoatDong)" />
+                <button type="submit" class="btn @(dangHoatDong ? "btn-outline-warning" : "btn-outline-success")">
+                    <i class="bi @(dangHoatDong ? "bi-pause-circle" : "bi-play-circle")"></i>@(dangHoatDong ? "Ngừng hoạt động" : "Kích hoạt lại")
+                </button>
+            </form>
+            <a asp-action="Edit" asp-route-id="@Model.MaChungChi" class="btn btn-primary"><i class="bi bi-pencil"></i>Sửa</a>
+        </div>
+    }
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header">Thông tin chứng chỉ</div>
+            <div class="card-body py-1">
+                <dl class="info-list">
+                    <div class="row"><dt class="col-sm-4">Mã chứng chỉ</dt><dd class="col-sm-8">#@Model.MaChungChi</dd></div>
+                    <div class="row"><dt class="col-sm-4">Email liên hệ</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.EmailLienHe is null) { <span class="text-muted">Chưa cập nhật</span> }
+                            else { <a href="mailto:@Model.EmailLienHe">@Model.EmailLienHe</a> }
+                        </dd></div>
+                    <div class="row"><dt class="col-sm-4">Mô tả</dt>
+                        <dd class="col-sm-8" style="white-space: pre-line">@(Model.MoTa ?? "Chưa có mô tả")</dd></div>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Kỳ thi gần đây</span>
+                <span class="text-muted small fw-normal">10 kỳ thi có hạn đăng ký mới nhất</span>
+            </div>
+            @if (!Model.KyThiGanDay.Any())
+            {
+                <div class="empty-state py-4">
+                    <i class="bi bi-calendar-x"></i>
+                    <p class="mb-0">Chưa có kỳ thi nào thuộc chứng chỉ này.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-app align-middle">
+                        <thead><tr><th>Tên kỳ thi</th><th>Cấp độ</th><th>Hạn đăng ký</th><th>Trạng thái</th></tr></thead>
+                        <tbody>
+                            @foreach (var k in Model.KyThiGanDay)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@k.TenKyThi</td>
+                                    <td>@k.CapDoThi</td>
+                                    <td>@k.HanDangKy.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td><partial name="_BadgeTrangThai" model="k.TrangThai" /></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="stat-card mb-3">
+                    <div class="stat-icon tone-violet"><i class="bi bi-calendar-event"></i></div>
+                    <div><div class="stat-value">@Model.TongSoKyThi</div><div class="stat-label">Tổng số kỳ thi</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon tone-green"><i class="bi bi-door-open"></i></div>
+                    <div><div class="stat-value">@Model.SoKyThiDangMo</div><div class="stat-label">Đang mở đăng ký</div></div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.LaAdmin)
+        {
+            <div class="card border-danger-subtle">
+                <div class="card-header text-danger">Vùng nguy hiểm</div>
+                <div class="card-body">
+                    @if (Model.CoTheXoa)
+                    {
+                        <p class="small text-muted">Chứng chỉ chưa có kỳ thi nào nên có thể xóa vĩnh viễn.</p>
+                        <a asp-action="Delete" asp-route-id="@Model.MaChungChi" class="btn btn-outline-danger w-100"><i class="bi bi-trash"></i>Xóa chứng chỉ</a>
+                    }
+                    else
+                    {
+                        <p class="small text-muted mb-0">
+                            <i class="bi bi-shield-lock me-1"></i>Chứng chỉ đã được kỳ thi sử dụng nên <strong>không thể xóa</strong>.
+                            Dùng <strong>Ngừng hoạt động</strong> nếu không còn tổ chức.
+                        </p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-link px-0 mt-3"><i class="bi bi-arrow-left"></i>Quay lại danh sách</a>

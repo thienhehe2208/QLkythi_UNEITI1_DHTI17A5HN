@@ -1,0 +1,31 @@
+@model ThiSinhIndexViewModel
+@{
+    ViewData["Title"] = "Thí sinh";
+}
+
+<div class="page-header">
+    <div><h1>Danh sách thí sinh</h1><p class="page-subtitle">Tra cứu hồ sơ cá nhân và số hồ sơ đăng ký dự thi.</p></div>
+</div>
+
+<div class="card">
+    <form method="get" class="filter-bar row g-2 align-items-end">
+        <div class="col-md-7"><label class="form-label">Tìm kiếm</label><div class="search-input"><i class="bi bi-search"></i><input name="tuKhoa" value="@Model.TuKhoa" class="form-control" placeholder="Họ tên, tài khoản, email, số điện thoại" /></div></div>
+        <div class="col-md-3"><label class="form-label">Trạng thái</label><select asp-for="TrangThai" class="form-select" asp-items="Html.GetEnumSelectList<TrangThaiThiSinh>()"><option value="">Tất cả</option></select></div>
+        <div class="col-md-2 d-flex gap-2"><button class="btn btn-primary flex-grow-1" type="submit">Lọc</button><a asp-action="Index" class="btn btn-light">Xóa</a></div>
+    </form>
+    @if (Model.DanhSach.Count == 0)
+    {
+        <div class="empty-state"><i class="bi bi-person-x"></i><h2>Không có thí sinh phù hợp</h2></div>
+    }
+    else
+    {
+        <div class="table-responsive"><table class="table table-app align-middle"><thead><tr><th>Thí sinh</th><th>Liên hệ</th><th>Hồ sơ dự thi</th><th>Trạng thái</th><th></th></tr></thead><tbody>
+        @foreach (var t in Model.DanhSach)
+        {
+            <tr><td><a asp-action="Details" asp-route-id="@t.MaThiSinh" class="title-link">@t.HoTen</a><div class="sub">@@@t.TenDangNhap · Mã TS: @t.MaThiSinh</div></td><td>@t.Email<div class="sub">@t.SoDienThoai</div></td><td>@t.SoHoSo</td><td><partial name="_BadgeTrangThai" model="t.TrangThai" /></td><td class="text-end"><a asp-action="Details" asp-route-id="@t.MaThiSinh" class="btn btn-light btn-icon" title="Chi tiết"><i class="bi bi-eye"></i></a><a asp-action="Edit" asp-route-id="@t.MaThiSinh" class="btn btn-light btn-icon" title="Sửa"><i class="bi bi-pencil"></i></a></td></tr>
+        }
+        </tbody></table></div>
+    }
+    <div class="card-footer"><partial name="_PhanTrang" model="Model.PhanTrang" /></div>
+</div>
+
