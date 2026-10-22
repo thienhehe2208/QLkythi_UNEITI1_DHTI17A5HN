@@ -1,0 +1,132 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Danh sách chứng chỉ - tìm kiếm, lọc trạng thái (Admin), sắp xếp, phân trang.
+   ============================================================ *@
+@model ChungChiIndexViewModel
+@{
+    ViewData["Title"] = "Chứng chỉ";
+    var dsSapXep = new List<SelectListItem>
+    {
+        new("Tên A → Z", "ten_asc"),
+        new("Tên Z → A", "ten_desc"),
+        new("Nhiều kỳ thi nhất", "sokythi_desc")
+    };
+    var dangLoc = !string.IsNullOrWhiteSpace(Model.TuKhoa) || Model.TrangThai.HasValue;
+}
+
+<div class="page-header">
+    <div>
+        <h1>Chứng chỉ</h1>
+        <p class="page-subtitle">
+            @(Model.LaAdmin ? "Danh mục chứng chỉ dùng để tạo kỳ thi." : "Các chứng chỉ đang được tổ chức thi.")
+        </p>
+    </div>
+    @if (Model.LaAdmin)
+    {
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Thêm chứng chỉ</a>
+    }
+</div>
+
+<div class="card">
+    <form asp-action="Index" method="get" class="filter-bar border-bottom">
+        <div class="row g-2 align-items-end">
+            <div class="@(Model.LaAdmin ? "col-md-5" : "col-md-7")">
+                <label asp-for="TuKhoa" class="form-label"></label>
+                <div class="search-input">
+                    <i class="bi bi-search"></i>
+                    <input asp-for="TuKhoa" class="form-control" placeholder="Tên hoặc mô tả chứng chỉ" />
+                </div>
+            </div>
+            @if (Model.LaAdmin)
+            {
+                <div class="col-6 col-md-2">
+                    <label asp-for="TrangThai" class="form-label"></label>
+                    <select asp-for="TrangThai" class="form-select" asp-items="Html.GetEnumSelectList<TrangThaiChungChi>()" data-auto-submit>
+                        <option value="">Tất cả</option>
+                    </select>
+                </div>
+            }
+            <div class="col-6 col-md-3">
+                <label asp-for="SapXep" class="form-label"></label>
+                <select asp-for="SapXep" class="form-select" asp-items="dsSapXep" data-auto-submit></select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-fill"><i class="bi bi-funnel"></i>Lọc</button>
+                @if (dangLoc)
+                {
+                    <a asp-action="Index" class="btn btn-light btn-icon" title="Xóa bộ lọc" aria-label="Xóa bộ lọc" data-bs-toggle="tooltip"><i class="bi bi-x-lg"></i></a>
+                }
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.DanhSach.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-award"></i>
+            <h2>Không có chứng chỉ phù hợp</h2>
+            <p class="mb-3">@(dangLoc ? "Thử đổi từ khóa hoặc bỏ bớt điều kiện lọc." : "Chưa có chứng chỉ nào.")</p>
+            @if (Model.LaAdmin && !dangLoc)
+            {
+                <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Thêm chứng chỉ đầu tiên</a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-app table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Chứng chỉ</th>
+                        <th class="text-center d-none d-md-table-cell">Số kỳ thi</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model.DanhSach)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="stat-icon stat-icon-sm tone-blue"><i class="bi bi-award"></i></span>
+                                    <div>
+                                        <a class="title-link" asp-action="Details" asp-route-id="@c.MaChungChi">@c.TenChungChi</a>
+                                        <div class="sub">@if (c.EmailLienHe is null) { <span>Chưa có email liên hệ</span> } else { <i class="bi bi-envelope me-1"></i>@c.EmailLienHe }</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center d-none d-md-table-cell"><span class="badge rounded-pill text-bg-light border">@c.SoKyThi</span></td>
+                            <td><partial name="_BadgeTrangThai" model="c.TrangThai" /></td>
+                            <td class="text-end">
+                                <div class="table-actions">
+                                    <a asp-action="Details" asp-route-id="@c.MaChungChi" class="btn btn-light btn-icon" title="Xem chi tiết" aria-label="Xem chi tiết" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
+                                    @if (Model.LaAdmin)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@c.MaChungChi" class="btn btn-light btn-icon" title="Sửa" aria-label="Sửa" data-bs-toggle="tooltip"><i class="bi bi-pencil"></i></a>
+                                        @if (c.SoKyThi == 0)
+                                        {
+                                            <a asp-action="Delete" asp-route-id="@c.MaChungChi" class="btn btn-light btn-icon text-danger" title="Xóa" aria-label="Xóa" data-bs-toggle="tooltip"><i class="bi bi-trash"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <span class="d-inline-block" tabindex="0" title="Đã có kỳ thi, không thể xóa" data-bs-toggle="tooltip">
+                                                <button class="btn btn-light btn-icon" disabled aria-label="Không thể xóa"><i class="bi bi-trash"></i></button>
+                                            </span>
+                                        }
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="card-footer">
+        <partial name="_PhanTrang" model="Model.PhanTrang" />
+    </div>
+</div>

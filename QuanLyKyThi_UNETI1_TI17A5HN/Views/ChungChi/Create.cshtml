@@ -1,0 +1,38 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Form thêm chứng chỉ (Admin).
+   ============================================================ *@
+@model ChungChiFormViewModel
+@{
+    ViewData["Title"] = "Thêm chứng chỉ";
+}
+
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Chứng chỉ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm mới</li>
+            </ol>
+        </nav>
+        <h1>Thêm chứng chỉ</h1>
+    </div>
+</div>
+
+<form asp-action="Create" method="post" class="card" style="max-width: 860px">
+    <div class="card-body">
+        <partial name="_Form" model="Model" />
+    </div>
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Chứng chỉ mới ở trạng thái Đang hoạt động.</span>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-light">Hủy</a>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Lưu chứng chỉ</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
