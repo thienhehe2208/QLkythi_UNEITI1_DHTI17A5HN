@@ -1,0 +1,90 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Trang chủ - lời chào, số liệu nhanh và lối tắt theo vai trò.
+   ============================================================ *@
+@model TrangChuViewModel
+@{
+    ViewData["Title"] = "Trang chủ";
+    var session = Context.Session;
+    var vaiTro = session.LayVaiTro()!.Value;
+    var laAdmin = vaiTro == VaiTro.Admin;
+    var gio = DateTime.Now.Hour;
+    var loiChao = gio < 11 ? "Chào buổi sáng" : gio < 14 ? "Chào buổi trưa" : gio < 18 ? "Chào buổi chiều" : "Chào buổi tối";
+}
+
+<div class="page-header">
+    <div>
+        <h1>@loiChao, @session.LayHoTen()</h1>
+        <p class="page-subtitle">
+            Bạn đang đăng nhập với vai trò <span class="badge badge-soft"><i class="bi @GiaoDienHelper.IconVaiTro(vaiTro) me-1"></i>@vaiTro.HienThi()</span>
+            · @DateTime.Now.ToString("dddd, dd/MM/yyyy", new System.Globalization.CultureInfo("vi-VN"))
+        </p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card"><div class="card-body stat-card">
+            <div class="stat-icon tone-blue"><i class="bi bi-award"></i></div>
+            <div><div class="stat-value">@Model.SoChungChiHoatDong</div><div class="stat-label">Chứng chỉ đang hoạt động</div></div>
+        </div></div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card"><div class="card-body stat-card">
+            <div class="stat-icon tone-violet"><i class="bi bi-calendar-event"></i></div>
+            <div><div class="stat-value">@Model.SoKyThi</div><div class="stat-label">Kỳ thi</div></div>
+        </div></div>
+    </div>
+    @if (laAdmin)
+    {
+        <div class="col-sm-6 col-xl-3">
+            <div class="card"><div class="card-body stat-card">
+                <div class="stat-icon tone-green"><i class="bi bi-people"></i></div>
+                <div><div class="stat-value">@Model.SoTaiKhoan</div><div class="stat-label">Tài khoản</div></div>
+            </div></div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card"><div class="card-body stat-card">
+                <div class="stat-icon tone-red"><i class="bi bi-person-lock"></i></div>
+                <div><div class="stat-value">@Model.SoTaiKhoanBiKhoa</div><div class="stat-label">Tài khoản bị khóa</div></div>
+            </div></div>
+        </div>
+    }
+</div>
+
+<h2 class="form-section-title">Truy cập nhanh</h2>
+<div class="row g-3">
+    <div class="col-md-6 col-xl-4">
+        <a class="card action-card" asp-controller="ChungChi" asp-action="Index">
+            <div class="card-body">
+                <div class="stat-icon tone-blue"><i class="bi bi-award"></i></div>
+                <h3 class="h6 fw-bold mb-1">Chứng chỉ</h3>
+                <p class="text-muted small mb-0">
+                    @(laAdmin ? "Thêm, sửa, xóa và cập nhật trạng thái chứng chỉ." : "Xem các chứng chỉ đang tổ chức thi.")
+                </p>
+            </div>
+        </a>
+    </div>
+    @if (laAdmin)
+    {
+        <div class="col-md-6 col-xl-4">
+            <a class="card action-card" asp-controller="TaiKhoan" asp-action="Index">
+                <div class="card-body">
+                    <div class="stat-icon tone-green"><i class="bi bi-people"></i></div>
+                    <h3 class="h6 fw-bold mb-1">Tài khoản</h3>
+                    <p class="text-muted small mb-0">Tạo tài khoản, phân vai trò, khóa/mở khóa, đặt lại mật khẩu.</p>
+                </div>
+            </a>
+        </div>
+    }
+    <div class="col-md-6 col-xl-4">
+        <a class="card action-card" asp-controller="Auth" asp-action="DoiMatKhau">
+            <div class="card-body">
+                <div class="stat-icon tone-amber"><i class="bi bi-key"></i></div>
+                <h3 class="h6 fw-bold mb-1">Đổi mật khẩu</h3>
+                <p class="text-muted small mb-0">Cập nhật mật khẩu tài khoản của bạn.</p>
+            </div>
+        </a>
+    </div>
+</div>
