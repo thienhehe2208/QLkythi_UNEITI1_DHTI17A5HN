@@ -1,0 +1,133 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Danh sách tài khoản - tìm kiếm, lọc vai trò/trạng thái, phân trang,
+   khóa/mở khóa (Admin).
+   ============================================================ *@
+@model TaiKhoanIndexViewModel
+@{
+    ViewData["Title"] = "Tài khoản";
+    var dangLoc = !string.IsNullOrWhiteSpace(Model.TuKhoa) || Model.VaiTro.HasValue || Model.TrangThai.HasValue;
+    var maDangNhap = Context.Session.LayMaTaiKhoan();
+}
+
+<div class="page-header">
+    <div>
+        <h1>Tài khoản</h1>
+        <p class="page-subtitle">Quản lý tài khoản đăng nhập, vai trò và trạng thái hoạt động.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-person-plus"></i>Thêm tài khoản</a>
+</div>
+
+<div class="card">
+    <form asp-action="Index" method="get" class="filter-bar border-bottom">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label asp-for="TuKhoa" class="form-label"></label>
+                <div class="search-input">
+                    <i class="bi bi-search"></i>
+                    <input asp-for="TuKhoa" class="form-control" placeholder="Tên đăng nhập, họ tên hoặc email" />
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <label asp-for="VaiTro" class="form-label"></label>
+                <select asp-for="VaiTro" class="form-select" asp-items="Html.GetEnumSelectList<VaiTro>()" data-auto-submit>
+                    <option value="">Tất cả vai trò</option>
+                </select>
+            </div>
+            <div class="col-6 col-md-2">
+                <label asp-for="TrangThai" class="form-label"></label>
+                <select asp-for="TrangThai" class="form-select" asp-items="Html.GetEnumSelectList<TrangThaiTaiKhoan>()" data-auto-submit>
+                    <option value="">Tất cả</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-fill"><i class="bi bi-funnel"></i>Lọc</button>
+                @if (dangLoc)
+                {
+                    <a asp-action="Index" class="btn btn-light btn-icon" title="Xóa bộ lọc" aria-label="Xóa bộ lọc" data-bs-toggle="tooltip"><i class="bi bi-x-lg"></i></a>
+                }
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.DanhSach.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <h2>Không có tài khoản phù hợp</h2>
+            <p class="mb-3">@(dangLoc ? "Thử đổi từ khóa hoặc bỏ bớt điều kiện lọc." : "Chưa có tài khoản nào trong hệ thống.")</p>
+            @if (dangLoc)
+            {
+                <a asp-action="Index" class="btn btn-light">Xóa bộ lọc</a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-app table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Người dùng</th>
+                        <th class="d-none d-md-table-cell">Tên đăng nhập</th>
+                        <th class="d-none d-lg-table-cell">Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tk in Model.DanhSach)
+                    {
+                        var laMinh = tk.MaTaiKhoan == maDangNhap;
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="avatar avatar-sm">@GiaoDienHelper.ChuCaiDau(tk.HoTen)</span>
+                                    <div>
+                                        <a class="title-link" asp-action="Details" asp-route-id="@tk.MaTaiKhoan">@tk.HoTen</a>
+                                        @if (laMinh) { <span class="badge badge-soft ms-1">Bạn</span> }
+                                        <div class="sub">@tk.Email</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="d-none d-md-table-cell"><code class="text-body">@tk.TenDangNhap</code></td>
+                            <td class="d-none d-lg-table-cell">
+                                <i class="bi @GiaoDienHelper.IconVaiTro(tk.VaiTro) text-muted me-1"></i>@tk.VaiTro.HienThi()
+                                @if (tk.CoHoSoThiSinh)
+                                {
+                                    <span class="badge-status info ms-1" title="Đã có hồ sơ thí sinh">Có hồ sơ</span>
+                                }
+                            </td>
+                            <td><partial name="_BadgeTrangThai" model="tk.TrangThai" /></td>
+                            <td class="text-end">
+                                <div class="table-actions">
+                                    <a asp-action="Details" asp-route-id="@tk.MaTaiKhoan" class="btn btn-light btn-icon" title="Xem chi tiết" aria-label="Xem chi tiết" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
+                                    <a asp-action="Edit" asp-route-id="@tk.MaTaiKhoan" class="btn btn-light btn-icon" title="Sửa" aria-label="Sửa" data-bs-toggle="tooltip"><i class="bi bi-pencil"></i></a>
+                                    @if (!laMinh)
+                                    {
+                                        var dangHoatDong = tk.TrangThai == TrangThaiTaiKhoan.HoatDong;
+                                        <form asp-action="KhoaMoKhoa" asp-route-id="@tk.MaTaiKhoan" method="post" class="d-inline"
+                                              data-confirm="@(dangHoatDong ? $"Khóa tài khoản \"{tk.TenDangNhap}\"? Người dùng sẽ bị đăng xuất và không thể đăng nhập." : $"Mở khóa tài khoản \"{tk.TenDangNhap}\"?")"
+                                              data-confirm-title="@(dangHoatDong ? "Khóa tài khoản" : "Mở khóa tài khoản")"
+                                              data-confirm-ok="@(dangHoatDong ? "Khóa" : "Mở khóa")"
+                                              data-confirm-variant="@(dangHoatDong ? "btn-warning" : "btn-success")">
+                                            <button type="submit" class="btn btn-light btn-icon" title="@(dangHoatDong ? "Khóa" : "Mở khóa")" aria-label="@(dangHoatDong ? "Khóa" : "Mở khóa")" data-bs-toggle="tooltip">
+                                                <i class="bi @(dangHoatDong ? "bi-lock" : "bi-unlock")"></i>
+                                            </button>
+                                        </form>
+                                        <a asp-action="Delete" asp-route-id="@tk.MaTaiKhoan" class="btn btn-light btn-icon text-danger" title="Xóa" aria-label="Xóa" data-bs-toggle="tooltip"><i class="bi bi-trash"></i></a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="card-footer">
+        <partial name="_PhanTrang" model="Model.PhanTrang" />
+    </div>
+</div>

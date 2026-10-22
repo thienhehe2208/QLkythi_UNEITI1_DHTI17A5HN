@@ -1,0 +1,50 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Admin đặt lại mật khẩu cho tài khoản.
+   ============================================================ *@
+@model DatLaiMatKhauViewModel
+@{
+    ViewData["Title"] = "Đặt lại mật khẩu";
+}
+
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Tài khoản</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.MaTaiKhoan">@Model.TenDangNhap</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Đặt lại mật khẩu</li>
+            </ol>
+        </nav>
+        <h1>Đặt lại mật khẩu</h1>
+        <p class="page-subtitle">Tài khoản <strong>@Model.TenDangNhap</strong> sẽ dùng mật khẩu mới ở lần đăng nhập tiếp theo.</p>
+    </div>
+</div>
+
+<form asp-action="DatLaiMatKhau" asp-route-id="@Model.MaTaiKhoan" method="post" class="card" style="max-width: 520px">
+    <input type="hidden" asp-for="MaTaiKhoan" />
+    <div class="card-body">
+        <div class="mb-3">
+            <label asp-for="MatKhauMoi" class="form-label required"></label>
+            <div class="input-group">
+                <input asp-for="MatKhauMoi" class="form-control" autocomplete="new-password" />
+                <button class="btn btn-outline-secondary" type="button" data-toggle-password="MatKhauMoi" aria-label="Hiện mật khẩu"><i class="bi bi-eye"></i></button>
+            </div>
+            <span asp-validation-for="MatKhauMoi" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="XacNhanMatKhau" class="form-label required"></label>
+            <input asp-for="XacNhanMatKhau" class="form-control" autocomplete="new-password" />
+            <span asp-validation-for="XacNhanMatKhau" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end gap-2">
+        <a asp-action="Details" asp-route-id="@Model.MaTaiKhoan" class="btn btn-light">Hủy</a>
+        <button type="submit" class="btn btn-warning"><i class="bi bi-key"></i>Đặt lại mật khẩu</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
