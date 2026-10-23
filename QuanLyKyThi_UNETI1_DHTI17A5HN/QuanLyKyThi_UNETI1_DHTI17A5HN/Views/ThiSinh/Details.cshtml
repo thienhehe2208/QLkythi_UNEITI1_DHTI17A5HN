@@ -2,8 +2,9 @@
 @{
     ViewData["Title"] = Model.HoTen;
     var soHoSo = ViewBag.SoHoSo as int? ?? 0;
+    var coTheSua = ViewBag.CoTheSua as bool? ?? false;
 }
-<div class="page-header"><div><h1>@Model.HoTen</h1><p class="page-subtitle">Mã thí sinh: @Model.MaThiSinh · Tài khoản: @Model.TaiKhoan?.TenDangNhap</p></div><a asp-action="Edit" asp-route-id="@Model.MaThiSinh" class="btn btn-primary"><i class="bi bi-pencil"></i>Cập nhật</a></div>
+<div class="page-header"><div><h1>@Model.HoTen</h1><p class="page-subtitle">Mã thí sinh: @Model.MaThiSinh · Tài khoản: @Model.TaiKhoan?.TenDangNhap</p></div>@if (coTheSua) { <a asp-action="Edit" class="btn btn-primary"><i class="bi bi-pencil"></i>Cập nhật</a> }</div>
 <div class="row g-3"><div class="col-lg-8"><div class="card"><div class="card-header">Thông tin cá nhân</div><div class="card-body py-1"><dl class="info-list">
     <div class="row"><dt class="col-sm-4">Ngày sinh / Giới tính</dt><dd class="col-sm-8">@Model.NgaySinh.ToString("dd/MM/yyyy") · @Model.GioiTinh.HienThi()</dd></div>
     <div class="row"><dt class="col-sm-4">Liên hệ</dt><dd class="col-sm-8">@Model.Email · @Model.SoDienThoai</dd></div>

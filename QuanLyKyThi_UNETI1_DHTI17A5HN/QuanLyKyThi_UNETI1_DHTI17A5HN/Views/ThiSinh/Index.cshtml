@@ -22,7 +22,7 @@
         <div class="table-responsive"><table class="table table-app align-middle"><thead><tr><th>Thí sinh</th><th>Liên hệ</th><th>Hồ sơ dự thi</th><th>Trạng thái</th><th></th></tr></thead><tbody>
         @foreach (var t in Model.DanhSach)
         {
-            <tr><td><a asp-action="Details" asp-route-id="@t.MaThiSinh" class="title-link">@t.HoTen</a><div class="sub">@@@t.TenDangNhap · Mã TS: @t.MaThiSinh</div></td><td>@t.Email<div class="sub">@t.SoDienThoai</div></td><td>@t.SoHoSo</td><td><partial name="_BadgeTrangThai" model="t.TrangThai" /></td><td class="text-end"><a asp-action="Details" asp-route-id="@t.MaThiSinh" class="btn btn-light btn-icon" title="Chi tiết"><i class="bi bi-eye"></i></a><a asp-action="Edit" asp-route-id="@t.MaThiSinh" class="btn btn-light btn-icon" title="Sửa"><i class="bi bi-pencil"></i></a></td></tr>
+            <tr><td><a asp-action="Details" asp-route-id="@t.MaThiSinh" class="title-link">@t.HoTen</a><div class="sub">@@@t.TenDangNhap · Mã TS: @t.MaThiSinh</div></td><td>@t.Email<div class="sub">@t.SoDienThoai</div></td><td>@t.SoHoSo</td><td><partial name="_BadgeTrangThai" model="t.TrangThai" /></td><td class="text-end"><a asp-action="Details" asp-route-id="@t.MaThiSinh" class="btn btn-light btn-icon" title="Chi tiết"><i class="bi bi-eye"></i></a></td></tr>
         }
         </tbody></table></div>
     }

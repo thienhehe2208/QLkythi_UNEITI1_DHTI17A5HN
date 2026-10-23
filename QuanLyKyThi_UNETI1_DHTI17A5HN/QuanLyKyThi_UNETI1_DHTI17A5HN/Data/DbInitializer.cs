@@ -208,9 +208,9 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Data
             if (thiSinhs.Count == 0 || kyThis.Count == 0) return;
 
             var trangThais = Enumerable.Repeat(TrangThaiHoSo.ChoDuyet, 12)
-                .Concat(Enumerable.Repeat(TrangThaiHoSo.DuDieuKien, 8))
+                .Concat(Enumerable.Repeat(TrangThaiHoSo.DuDieuKien, 7))
                 .Concat(Enumerable.Repeat(TrangThaiHoSo.KhongDuDieuKien, 5))
-                .Concat(Enumerable.Repeat(TrangThaiHoSo.ChoThi, 6))
+                .Concat(Enumerable.Repeat(TrangThaiHoSo.ChoThi, 7))
                 .Concat(Enumerable.Repeat(TrangThaiHoSo.DaThi, 4))
                 .Concat(Enumerable.Repeat(TrangThaiHoSo.Dat, 4))
                 .Concat(Enumerable.Repeat(TrangThaiHoSo.KhongDat, 3))
@@ -258,16 +258,20 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Data
         private static async Task NapLichThiVaKetQuaAsync(ApplicationDbContext context)
         {
             var hoSoHopLe = await context.HoSoDangKyThis
-                .Where(h => h.TrangThai == TrangThaiHoSo.DuDieuKien
-                    || h.TrangThai == TrangThaiHoSo.ChoThi || h.TrangThai == TrangThaiHoSo.DaThi
+                .Where(h => h.TrangThai == TrangThaiHoSo.ChoThi || h.TrangThai == TrangThaiHoSo.DaThi
                     || h.TrangThai == TrangThaiHoSo.Dat || h.TrangThai == TrangThaiHoSo.KhongDat)
                 .OrderBy(h => h.MaHoSo).Take(18).ToListAsync();
             var maHoSoDaCoLich = await context.LichThis.Select(l => l.MaHoSo).ToListAsync();
-            var mocThi = DateTime.Today.AddDays(14).AddHours(8);
             for (var i = 0; i < hoSoHopLe.Count; i++)
             {
                 var hoSo = hoSoHopLe[i];
                 if (maHoSoDaCoLich.Contains(hoSo.MaHoSo)) continue;
+                var daThi = hoSo.TrangThai == TrangThaiHoSo.DaThi
+                    || hoSo.TrangThai == TrangThaiHoSo.Dat
+                    || hoSo.TrangThai == TrangThaiHoSo.KhongDat;
+                var mocThi = daThi
+                    ? DateTime.Today.AddDays(-20).AddHours(8)
+                    : DateTime.Today.AddDays(14).AddHours(8);
                 var batDau = mocThi.AddDays(i / 6).AddMinutes((i % 6) * 90);
                 context.LichThis.Add(new LichThi
                 {
@@ -277,7 +281,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Data
                     DiaDiemHoacLienKet = i % 4 == 0 ? "https://thi.example.local/phong-demo" : "Cơ sở Minh Khai",
                     PhongThi = i % 4 == 0 ? null : $"P.{201 + i % 6}",
                     GiamThi = $"Giám thị {i % 5 + 1}",
-                    TrangThai = TrangThaiLichThi.DaLenLich
+                    TrangThai = daThi ? TrangThaiLichThi.DaHoanThanh : TrangThaiLichThi.DaLenLich
                 });
             }
             await context.SaveChangesAsync();

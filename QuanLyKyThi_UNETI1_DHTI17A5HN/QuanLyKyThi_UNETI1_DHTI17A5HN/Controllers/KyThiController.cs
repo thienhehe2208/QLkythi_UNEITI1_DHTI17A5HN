@@ -333,7 +333,8 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
                 && (h.TrangThai == TrangThaiHoSo.DuDieuKien
                  || h.TrangThai == TrangThaiHoSo.ChoThi
                  || h.TrangThai == TrangThaiHoSo.DaThi
-                 || h.TrangThai == TrangThaiHoSo.Dat));
+                 || h.TrangThai == TrangThaiHoSo.Dat
+                 || h.TrangThai == TrangThaiHoSo.KhongDat));
         }
 
         private static bool DangNhanDangKy(KyThi kyThi, DateTime ngay)

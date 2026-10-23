@@ -63,7 +63,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             if (hoSo is null) return NotFound();
             if (LaThiSinh && hoSo.ThiSinh!.MaTaiKhoan != MaTaiKhoan)
                 return RedirectToAction("TuChoiTruyCap", "Auth");
-            ViewBag.CoTheHuy = LaThiSinh && hoSo.TrangThai == TrangThaiHoSo.ChoDuyet;
+            ViewBag.CoTheHuy = LaThiSinh && await CoTheHuyAsync(hoSo);
             return View(hoSo);
         }
 
@@ -102,16 +102,10 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
                 ModelState.AddModelError(nameof(model.MaKyThi), "Kỳ thi không tồn tại hoặc hiện không nhận hồ sơ.");
 
             if (await _context.HoSoDangKyThis.AnyAsync(h => h.MaThiSinh == thiSinh.MaThiSinh
-                && h.MaKyThi == model.MaKyThi && h.TrangThai != TrangThaiHoSo.DaHuy))
+                && h.MaKyThi == model.MaKyThi
+                && h.TrangThai != TrangThaiHoSo.KhongDuDieuKien
+                && h.TrangThai != TrangThaiHoSo.DaHuy))
                 ModelState.AddModelError(nameof(model.MaKyThi), "Bạn đã có hồ sơ cho kỳ thi này.");
-
-            if (kyThi != null)
-            {
-                var soGiuCho = await _context.HoSoDangKyThis.CountAsync(h => h.MaKyThi == model.MaKyThi
-                    && h.TrangThai != TrangThaiHoSo.KhongDuDieuKien && h.TrangThai != TrangThaiHoSo.DaHuy);
-                if (soGiuCho >= kyThi.SoChoThiToiDa)
-                    ModelState.AddModelError(nameof(model.MaKyThi), "Kỳ thi đã đủ số lượng đăng ký.");
-            }
 
             if (!ModelState.IsValid)
             {
@@ -136,14 +130,16 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
         [PhanQuyen(VaiTro.ThiSinh)]
         public async Task<IActionResult> Huy(int id)
         {
-            var hoSo = await _context.HoSoDangKyThis.Include(h => h.ThiSinh)
+            var hoSo = await _context.HoSoDangKyThis
+                .Include(h => h.ThiSinh)
+                .Include(h => h.LichThis)
                 .FirstOrDefaultAsync(h => h.MaHoSo == id);
             if (hoSo is null) return NotFound();
             if (hoSo.ThiSinh!.MaTaiKhoan != MaTaiKhoan)
                 return RedirectToAction("TuChoiTruyCap", "Auth");
-            if (hoSo.TrangThai != TrangThaiHoSo.ChoDuyet)
+            if (!CoTheHuy(hoSo))
             {
-                TempData["LoiThongBao"] = "Chỉ có thể hủy hồ sơ đang chờ duyệt.";
+                TempData["LoiThongBao"] = "Chỉ có thể hủy hồ sơ đang chờ duyệt, hoặc hồ sơ đủ điều kiện nhưng chưa có lịch thi hiệu lực.";
                 return RedirectToAction(nameof(Details), new { id });
             }
             hoSo.TrangThai = TrangThaiHoSo.DaHuy;
@@ -153,6 +149,19 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             TempData["ThongBao"] = "Đã hủy hồ sơ đăng ký.";
             return RedirectToAction(nameof(Details), new { id });
         }
+
+        private async Task<bool> CoTheHuyAsync(HoSoDangKyThi hoSo)
+        {
+            if (hoSo.TrangThai == TrangThaiHoSo.ChoDuyet) return true;
+            if (hoSo.TrangThai != TrangThaiHoSo.DuDieuKien) return false;
+            return !await _context.LichThis.AnyAsync(l => l.MaHoSo == hoSo.MaHoSo
+                && l.TrangThai != TrangThaiLichThi.DaHuy);
+        }
+
+        private static bool CoTheHuy(HoSoDangKyThi hoSo)
+            => hoSo.TrangThai == TrangThaiHoSo.ChoDuyet
+                || (hoSo.TrangThai == TrangThaiHoSo.DuDieuKien
+                    && hoSo.LichThis.All(l => l.TrangThai == TrangThaiLichThi.DaHuy));
 
         private async Task NapKyThiDangMoAsync(int? giaTri)
         {

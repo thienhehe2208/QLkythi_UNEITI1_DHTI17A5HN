@@ -78,24 +78,19 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             if (LaThiSinh && thiSinh.MaTaiKhoan != MaTaiKhoan)
                 return RedirectToAction("TuChoiTruyCap", "Auth");
             ViewBag.SoHoSo = await _context.HoSoDangKyThis.CountAsync(h => h.MaThiSinh == id);
+            ViewBag.CoTheSua = LaThiSinh;
             return View(thiSinh);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
+        [PhanQuyen(VaiTro.ThiSinh)]
+        public async Task<IActionResult> Edit()
         {
-            ThiSinh? thiSinh;
-            if (LaThiSinh)
-                thiSinh = await _context.ThiSinhs.AsNoTracking().FirstOrDefaultAsync(t => t.MaTaiKhoan == MaTaiKhoan);
-            else
-            {
-                if (!id.HasValue) return BadRequest();
-                thiSinh = await _context.ThiSinhs.AsNoTracking().FirstOrDefaultAsync(t => t.MaThiSinh == id.Value);
-            }
+            var thiSinh = await _context.ThiSinhs.AsNoTracking()
+                .FirstOrDefaultAsync(t => t.MaTaiKhoan == MaTaiKhoan);
 
             if (thiSinh is null)
             {
-                if (!LaThiSinh) return NotFound();
                 var taiKhoan = await _context.TaiKhoans.AsNoTracking().FirstAsync(t => t.MaTaiKhoan == MaTaiKhoan);
                 return View(new ThiSinhFormViewModel
                 {
@@ -116,15 +111,11 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [PhanQuyen(VaiTro.ThiSinh)]
         public async Task<IActionResult> Edit(ThiSinhFormViewModel model)
         {
-            ThiSinh? thiSinh;
-            if (LaThiSinh)
-                thiSinh = await _context.ThiSinhs.FirstOrDefaultAsync(t => t.MaTaiKhoan == MaTaiKhoan);
-            else
-                thiSinh = await _context.ThiSinhs.FirstOrDefaultAsync(t => t.MaThiSinh == model.MaThiSinh);
-
-            if (!LaThiSinh && thiSinh is null) return NotFound();
+            var taiKhoan = await _context.TaiKhoans.FirstAsync(t => t.MaTaiKhoan == MaTaiKhoan);
+            var thiSinh = await _context.ThiSinhs.FirstOrDefaultAsync(t => t.MaTaiKhoan == MaTaiKhoan);
             if (model.NgaySinh > DateTime.Today || model.NgaySinh < DateTime.Today.AddYears(-100))
                 ModelState.AddModelError(nameof(model.NgaySinh), "Ngày sinh không hợp lệ.");
             if (!ModelState.IsValid) return View(model);
@@ -144,7 +135,8 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             thiSinh.NgheNghiep = model.NgheNghiep?.Trim();
             thiSinh.SoLanThiTruocDay = model.SoLanThiTruocDay;
             thiSinh.ChungChiDaCo = model.ChungChiDaCo?.Trim();
-            if (!LaThiSinh) thiSinh.TrangThai = model.TrangThai;
+            taiKhoan.HoTen = thiSinh.HoTen;
+            taiKhoan.Email = thiSinh.Email;
 
             await _context.SaveChangesAsync();
             TempData["ThongBao"] = "Đã cập nhật thông tin thí sinh.";
