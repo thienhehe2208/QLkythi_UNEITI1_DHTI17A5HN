@@ -24,13 +24,6 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<Module5Service>();
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("Module5:SeedDemo"))
-{
-    await using var scope = app.Services.CreateAsyncScope();
-    await Module5DemoData.TaoAsync(scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(),
-        scope.ServiceProvider.GetRequiredService<IMatKhauService>(),
-        scope.ServiceProvider.GetRequiredService<Module5Service>().BayGio);
-}
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Module5/Loi");
