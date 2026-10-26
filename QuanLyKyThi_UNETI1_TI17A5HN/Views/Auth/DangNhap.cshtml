@@ -3,6 +3,7 @@
    Mã sinh viên: 23103100232
    Nội dung thực hiện: Form đăng nhập, hiển thị lỗi tài khoản không tồn tại/sai mật khẩu/bị khóa.
    ============================================================ *@
+@* Phạm Quang Minh — 23103100201: Dùng nhãn chữ cho nút mật khẩu khi main chưa có bộ icon. *@
 @model DangNhapViewModel
 @{
     ViewData["Title"] = "Đăng nhập";
@@ -36,7 +37,7 @@
             <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
             <input asp-for="MatKhau" class="form-control" autocomplete="current-password" placeholder="••••••••" />
             <button class="btn btn-outline-secondary" type="button" data-toggle-password="MatKhau" aria-label="Hiện mật khẩu">
-                <i class="bi bi-eye"></i>
+                <span data-password-label>Hiện</span>
             </button>
         </div>
         <span asp-validation-for="MatKhau" class="text-danger"></span>

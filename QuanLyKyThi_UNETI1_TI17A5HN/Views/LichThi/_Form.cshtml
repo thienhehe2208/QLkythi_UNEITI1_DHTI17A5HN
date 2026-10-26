@@ -1,0 +1,14 @@
+@* Phạm Quang Minh — 23103100201: Các trường tạo/sửa lịch thi dùng chung. *@
+@model LichThiFormViewModel
+<input asp-for="MaLichThi" type="hidden" />
+<div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+<div class="row g-3">
+    <div class="col-12"><label asp-for="MaHoSo" class="form-label required"></label><select asp-for="MaHoSo" asp-items="Model.HoSos" class="form-select"><option value="">Chọn hồ sơ</option></select><span asp-validation-for="MaHoSo" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="ThoiGianBatDau" class="form-label required"></label><input asp-for="ThoiGianBatDau" type="datetime-local" class="form-control" /><span asp-validation-for="ThoiGianBatDau" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="ThoiGianKetThuc" class="form-label required"></label><input asp-for="ThoiGianKetThuc" type="datetime-local" class="form-control" /><span asp-validation-for="ThoiGianKetThuc" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="HinhThucThi" class="form-label required"></label><select asp-for="HinhThucThi" asp-items="Html.GetEnumSelectList<HinhThucThi>()" class="form-select"></select><span asp-validation-for="HinhThucThi" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="GiamThi" class="form-label required"></label><input asp-for="GiamThi" class="form-control" /><span asp-validation-for="GiamThi" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="DiaDiemHoacLienKet" class="form-label required"></label><input asp-for="DiaDiemHoacLienKet" class="form-control" /><span asp-validation-for="DiaDiemHoacLienKet" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="PhongThi" class="form-label"></label><input asp-for="PhongThi" class="form-control" placeholder="vd. A-301" /><div class="form-text">Bắt buộc khi thi trực tiếp; bỏ qua khi thi trực tuyến.</div><span asp-validation-for="PhongThi" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="GhiChu" class="form-label"></label><textarea asp-for="GhiChu" class="form-control" rows="3" maxlength="1000"></textarea><span asp-validation-for="GhiChu" class="text-danger"></span></div>
+</div>

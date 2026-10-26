@@ -1,0 +1,12 @@
+@* Phạm Quang Minh — 23103100201: Thông báo nổi dùng khóa TempData và Bootstrap Toast theo nhóm. *@
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+@foreach (var item in new[] { ("ThongBao", "success"), ("LoiThongBao", "danger") })
+{
+    if (TempData[item.Item1] is string message)
+    {
+        <div class="toast text-bg-@item.Item2" role="@(item.Item2 == "danger" ? "alert" : "status")" aria-live="polite" aria-atomic="true">
+            <div class="d-flex"><div class="toast-body">@message</div><button class="btn-close btn-close-white me-2 m-auto" type="button" data-bs-dismiss="toast" aria-label="Đóng thông báo"></button></div>
+        </div>
+    }
+}
+</div>

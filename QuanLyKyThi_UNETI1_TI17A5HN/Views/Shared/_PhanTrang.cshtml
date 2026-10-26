@@ -1,0 +1,28 @@
+@* Phạm Quang Minh — 23103100201: Partial phân trang tương thích quy ước nhóm, giữ từ khóa và bộ lọc. *@
+@model PhanTrangViewModel
+@{
+    var dau = Model.TongSoBanGhi == 0 ? 0 : (Model.TrangHienTai - 1) * Model.KichThuocTrang + 1;
+    var cuoi = Math.Min(Model.TrangHienTai * Model.KichThuocTrang, Model.TongSoBanGhi);
+    var nut = new List<(int Trang, string Nhan, string MoTa, bool Bat)>();
+    nut.Add((1, "«", "Trang đầu", Model.CoTrangTruoc));
+    nut.Add((Model.TrangHienTai - 1, "‹", "Trang trước", Model.CoTrangTruoc));
+    for (int i = Math.Max(1, Model.TrangHienTai - 2); i <= Math.Min(Model.TongSoTrang, Model.TrangHienTai + 2); i++) { nut.Add((i, i.ToString(), $"Trang {i}", true)); }
+    nut.Add((Model.TrangHienTai + 1, "›", "Trang sau", Model.CoTrangSau));
+    nut.Add((Model.TongSoTrang, "»", "Trang cuối", Model.CoTrangSau));
+}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div class="text-muted small">Hiển thị <strong>@dau–@cuoi</strong> trong <strong>@Model.TongSoBanGhi</strong> bản ghi</div>
+    @if (Model.TongSoTrang > 1)
+    {
+        <nav aria-label="Phân trang"><ul class="pagination pagination-sm mb-0">
+        @foreach (var n in nut)
+        {
+            var hienTai = n.MoTa == $"Trang {Model.TrangHienTai}";
+            <li class="page-item @(hienTai ? "active" : !n.Bat ? "disabled" : "")" aria-current="@(hienTai ? "page" : null)">
+                @if (n.Bat && !hienTai) { <a class="page-link" asp-action="@Model.Action" asp-all-route-data="Model.RouteChoTrang(n.Trang)" aria-label="@n.MoTa">@n.Nhan</a> }
+                else { <span class="page-link" aria-label="@n.MoTa">@n.Nhan</span> }
+            </li>
+        }
+        </ul></nav>
+    }
+</div>
