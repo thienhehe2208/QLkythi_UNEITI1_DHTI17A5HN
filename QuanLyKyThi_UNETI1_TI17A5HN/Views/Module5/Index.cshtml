@@ -1,0 +1,11 @@
+@* Phạm Quang Minh — 23103100201: Điều hướng Module 5 theo page-header và action-card của nhóm. *@
+@{ ViewData["Title"] = "Lịch thi và kết quả"; }
+<div class="page-header"><div><h1>Lịch thi và kết quả</h1><p class="page-subtitle">@(Context.Session.DaDangNhap() ? $"Xin chào {Context.Session.LayHoTen()}, chọn chức năng để tiếp tục." : "Đăng nhập để xem hoặc quản lý lịch thi và kết quả theo vai trò.")</p></div></div>
+@if (Context.Session.DaDangNhap())
+{
+    <div class="row g-3">
+        <div class="col-md-6"><a asp-controller="LichThi" asp-action="Index" class="card action-card"><div class="card-body"><h2 class="h5">Lịch thi</h2><p class="text-muted mb-0">Theo dõi thời gian, địa điểm và trạng thái các lịch thi.</p></div></a></div>
+        <div class="col-md-6"><a asp-controller="KetQuaThi" asp-action="Index" class="card action-card"><div class="card-body"><h2 class="h5">Kết quả thi</h2><p class="text-muted mb-0">Xem điểm đánh giá, nhận xét và kết quả đã xác nhận.</p></div></a></div>
+    </div>
+}
+else { <div class="card"><div class="card-body"><p>Sử dụng tài khoản được cấp để tiếp tục.</p><a asp-controller="Auth" asp-action="DangNhap" class="btn btn-primary">Đăng nhập</a></div></div> }

@@ -1,0 +1,28 @@
+@* Phạm Quang Minh — 23103100201: Khung form kết quả thi dùng breadcrumb, card và partial theo nhóm. *@
+@model KetQuaThiFormViewModel
+@{
+    var sua = Model.MaKetQuaThi > 0;
+    ViewData["Title"] = sua ? "Sửa kết quả thi" : "Nhập kết quả thi";
+}
+<div class="page-header"><div>
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a asp-action="Index">Kết quả thi</a></li><li class="breadcrumb-item active" aria-current="page">@(sua ? "Chỉnh sửa" : "Thêm mới")</li></ol></nav>
+    <h1>@ViewData["Title"]</h1>
+    <p class="page-subtitle">Cán bộ xác nhận kết quả cuối cùng của hồ sơ đã hoàn thành thi.</p>
+</div></div>
+<div class="row g-3">
+    <div class="col-lg-8">
+        <form asp-action="@(sua ? "Edit" : "Create")" asp-route-id="@(sua ? Model.MaKetQuaThi : (int?)null)" method="post" class="card">
+            <div class="card-header">Thông tin kết quả thi</div>
+            <div class="card-body">
+                @if (Model.HoSos.Count == 0) { <div class="alert alert-info">Chưa có hồ sơ đã hoàn thành thi và chưa có kết quả.</div> }
+                <partial name="_Form" model="Model" />
+            </div>
+            <div class="card-footer d-flex gap-2"><button class="btn btn-primary">Xác nhận và lưu</button><a asp-action="Index" class="btn btn-light">Quay lại</a></div>
+        </form>
+    </div>
+    <div class="col-lg-4"><div class="card"><div class="card-header">Lưu ý</div><div class="card-body text-muted small">
+        <p>Điểm đánh giá từ 0 đến 100, có thể để trống nếu không sử dụng điểm. Cán bộ phải chọn Đạt hoặc Không đạt.</p>
+        <p class="mb-0">Kết quả hiển thị cho thí sinh ngay sau khi lưu. Ngày cập nhật do hệ thống xác định.</p>
+    </div></div></div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

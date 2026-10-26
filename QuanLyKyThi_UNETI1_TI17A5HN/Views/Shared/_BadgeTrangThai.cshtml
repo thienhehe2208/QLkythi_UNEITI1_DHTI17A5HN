@@ -1,0 +1,17 @@
+@* Phạm Quang Minh — 23103100201: Badge trạng thái theo màu và class chung của nhóm. *@
+@model Enum
+@{
+    var mau = Model switch
+    {
+        TrangThaiLichThi.DaLenLich => "info",
+        TrangThaiLichThi.DaHoanThanh => "success",
+        KetQuaCuoiCung.Dat => "success",
+        KetQuaCuoiCung.KhongDat => "danger",
+        TrangThaiHoSo.ChoDuyet => "warning",
+        TrangThaiHoSo.DuDieuKien or TrangThaiHoSo.ChoThi or TrangThaiHoSo.DaThi => "info",
+        TrangThaiHoSo.Dat => "success",
+        TrangThaiHoSo.KhongDat or TrangThaiHoSo.KhongDuDieuKien => "danger",
+        _ => "muted"
+    };
+}
+<span class="badge-status @mau">@Model.HienThi()</span>
