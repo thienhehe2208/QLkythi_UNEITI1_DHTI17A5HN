@@ -1,7 +1,7 @@
 // Họ và tên: Phạm Quang Minh
 // Mã sinh viên: 23103100201
-// Nội dung thực hiện: Nền khởi động tối thiểu cho Module 5 trên main hiện tại.
-// Khi tích hợp Program.cs của nhóm, giữ đăng ký TimeProvider và Module5Service.
+// Nội dung thực hiện: Khởi động ứng dụng Module 5, cấu hình DbContext, Session,
+// nạp dữ liệu mẫu DbInitializer, TimeProvider và Module5Service.
 using Microsoft.EntityFrameworkCore;
 using QuanLyKyThi_UNETI1_TI17A5HN.Controllers;
 using QuanLyKyThi_UNETI1_TI17A5HN.Data;
@@ -24,14 +24,10 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<Module5Service>();
 
 var app = builder.Build();
-// Phạm Quang Minh — 23103100201: Tạo/cập nhật database thật từ migration hiện có.
-// Không nạp tài khoản mẫu, lịch thi hay kết quả demo.
-if (app.Configuration.GetValue<bool>("KhoiTaoDuLieu:TuDongMigrate"))
-{
-    await using var scope = app.Services.CreateAsyncScope();
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await context.Database.MigrateAsync();
-}
+
+// Tự động áp dụng Migration và nạp dữ liệu mẫu
+await DbInitializer.KhoiTaoAsync(app.Services,
+    app.Configuration.GetValue("KhoiTaoDuLieu:TuDongMigrate", true));
 
 if (!app.Environment.IsDevelopment())
 {
@@ -43,7 +39,8 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
-// AuthController hiện có điều hướng về Home sau khi đăng nhập.
+
+// AuthController điều hướng về Home sau khi đăng nhập -> map về Module5
 app.MapControllerRoute("home-module5", "Home/{action=Index}", new { controller = "Module5" });
 app.MapControllerRoute("default", "{controller=Module5}/{action=Index}/{id?}");
 app.Run();
