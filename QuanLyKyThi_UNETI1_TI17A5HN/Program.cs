@@ -24,6 +24,15 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<Module5Service>();
 
 var app = builder.Build();
+// Phạm Quang Minh — 23103100201: Tạo/cập nhật database thật từ migration hiện có.
+// Không nạp tài khoản mẫu, lịch thi hay kết quả demo.
+if (app.Configuration.GetValue<bool>("KhoiTaoDuLieu:TuDongMigrate"))
+{
+    await using var scope = app.Services.CreateAsyncScope();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await context.Database.MigrateAsync();
+}
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Module5/Loi");
