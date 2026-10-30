@@ -1,0 +1,125 @@
+﻿@model XetDuyetHoSoIndexViewModel
+
+@{
+    ViewData["Title"] = "Xét duyệt hồ sơ";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Xét duyệt hồ sơ</h1>
+        <p class="page-subtitle">
+            Tiếp nhận và xử lý hồ sơ đăng ký dự thi.
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <form method="get" class="filter-bar row g-2 align-items-end">
+        <div class="col-md-6">
+            <label class="form-label">Tìm kiếm</label>
+
+            <div class="search-input">
+                <i class="bi bi-search"></i>
+
+                <input name="tuKhoa"
+                       value="@Model.TuKhoa"
+                       class="form-control"
+                       placeholder="Thí sinh, kỳ thi hoặc chứng chỉ" />
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Trạng thái</label>
+
+            <select asp-for="TrangThai"
+                    class="form-select"
+                    asp-items="Html.GetEnumSelectList<TrangThaiHoSo>()">
+            </select>
+        </div>
+
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit"
+                    class="btn btn-primary flex-grow-1">
+                Lọc
+            </button>
+
+            <a asp-action="Index"
+               class="btn btn-light">
+                Xóa
+            </a>
+        </div>
+    </form>
+
+    @if (Model.DanhSach.Count == 0)
+    {
+        <div class="empty-state">
+            <i class="bi bi-file-earmark-check"></i>
+
+            <h2>Không có hồ sơ phù hợp</h2>
+
+            <p>
+                Hiện không có hồ sơ ở trạng thái đã chọn.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-app align-middle">
+                <thead>
+                    <tr>
+                        <th>Mã hồ sơ</th>
+                        <th>Thí sinh</th>
+                        <th>Kỳ thi</th>
+                        <th>Ngày nộp</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var hoSo in Model.DanhSach)
+                    {
+                        <tr>
+                            <td>HS-@hoSo.MaHoSo</td>
+
+                            <td>
+                                <strong>@hoSo.HoTenThiSinh</strong>
+                            </td>
+
+                            <td>
+                                <div>@hoSo.TenKyThi</div>
+                                <div class="sub">
+                                    @hoSo.TenChungChi
+                                </div>
+                            </td>
+
+                            <td>
+                                @hoSo.NgayNop.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                <partial name="_BadgeTrangThai"
+                                         model="hoSo.TrangThai" />
+                            </td>
+
+                            <td class="text-end">
+                                <a asp-action="Details"
+                                   asp-route-id="@hoSo.MaHoSo"
+                                   class="btn btn-light">
+                                    <i class="bi bi-eye"></i>
+                                    Xem xét
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="card-footer">
+        <partial name="_PhanTrang"
+                 model="Model.PhanTrang" />
+    </div>
+</div>

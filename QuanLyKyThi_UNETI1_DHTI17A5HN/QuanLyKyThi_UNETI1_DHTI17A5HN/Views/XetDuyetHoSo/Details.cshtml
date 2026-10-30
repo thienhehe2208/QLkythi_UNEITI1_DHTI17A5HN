@@ -1,0 +1,323 @@
+﻿@model XetDuyetHoSoChiTietViewModel
+
+@{
+    ViewData["Title"] = $"Xét duyệt HS-{Model.MaHoSo}";
+}
+
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index">Xét duyệt hồ sơ</a>
+                </li>
+
+                <li class="breadcrumb-item active">
+                    HS-@Model.MaHoSo
+                </li>
+            </ol>
+        </nav>
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <h1>Hồ sơ HS-@Model.MaHoSo</h1>
+
+            <partial name="_BadgeTrangThai"
+                     model="Model.TrangThai" />
+        </div>
+
+        <p class="page-subtitle">
+            Nộp lúc @Model.NgayNop.ToString("dd/MM/yyyy HH:mm")
+        </p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <!-- Thông tin thí sinh -->
+        <div class="card mb-3">
+            <div class="card-header">
+                Thông tin thí sinh
+            </div>
+
+            <div class="card-body py-1">
+                <dl class="info-list">
+                    <div class="row">
+                        <dt class="col-sm-4">Họ tên</dt>
+                        <dd class="col-sm-8">@Model.HoTenThiSinh</dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Ngày sinh</dt>
+                        <dd class="col-sm-8">
+                            @Model.NgaySinh.ToString("dd/MM/yyyy")
+                        </dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Giới tính</dt>
+                        <dd class="col-sm-8">
+                            @Model.GioiTinh.HienThi()
+                        </dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Số điện thoại</dt>
+                        <dd class="col-sm-8">@Model.SoDienThoai</dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">@Model.Email</dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Địa chỉ</dt>
+                        <dd class="col-sm-8">
+                            @(Model.DiaChi ?? "Chưa cập nhật")
+                        </dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Trình độ hiện tại</dt>
+                        <dd class="col-sm-8">
+                            @(Model.TrinhDoHienTai ?? "Chưa cập nhật")
+                        </dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Nghề nghiệp</dt>
+                        <dd class="col-sm-8">
+                            @(Model.NgheNghiep ?? "Chưa cập nhật")
+                        </dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Số lần thi trước đây</dt>
+                        <dd class="col-sm-8">
+                            @Model.SoLanThiTruocDay
+                        </dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Chứng chỉ đã có</dt>
+                        <dd class="col-sm-8">
+                            @(Model.ChungChiDaCo ?? "Chưa có")
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Thông tin đăng ký -->
+        <div class="card mb-3">
+            <div class="card-header">
+                Thông tin đăng ký dự thi
+            </div>
+
+            <div class="card-body py-1">
+                <dl class="info-list">
+                    <div class="row">
+                        <dt class="col-sm-4">Kỳ thi</dt>
+                        <dd class="col-sm-8">
+                            <strong>@Model.TenKyThi</strong>
+
+                            <div class="text-muted small">
+                                @Model.TenChungChi · @Model.CapDoThi
+                            </div>
+                        </dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Điểm đầu vào tối thiểu</dt>
+                        <dd class="col-sm-8">
+                            @Model.DiemDauVaoToiThieu
+                        </dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Điều kiện dự thi</dt>
+                        <dd class="col-sm-8"
+                            style="white-space: pre-line">@(Model.DieuKienDuThi ?? "Chưa cập nhật")</dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Mục đích dự thi</dt>
+                        <dd class="col-sm-8"
+                            style="white-space: pre-line">@Model.MucDichDuThi</dd>
+                    </div>
+
+                    <div class="row">
+                        <dt class="col-sm-4">Ghi chú của thí sinh</dt>
+                        <dd class="col-sm-8"
+                            style="white-space: pre-line">@(Model.GhiChu ?? "Không có")</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        @if (Model.NgayXuLy.HasValue)
+        {
+            <div class="card">
+                <div class="card-header">
+                    Thông tin xử lý
+                </div>
+
+                <div class="card-body py-1">
+                    <dl class="info-list">
+                        <div class="row">
+                            <dt class="col-sm-4">Người xử lý</dt>
+                            <dd class="col-sm-8">
+                                @(Model.TenNguoiXuLy ?? "Không xác định")
+                            </dd>
+                        </div>
+
+                        <div class="row">
+                            <dt class="col-sm-4">Ngày xử lý</dt>
+                            <dd class="col-sm-8">
+                                @Model.NgayXuLy.Value.ToString("dd/MM/yyyy HH:mm")
+                            </dd>
+                        </div>
+
+                        <div class="row">
+                            <dt class="col-sm-4">Nhận xét</dt>
+                            <dd class="col-sm-8"
+                                style="white-space: pre-line">@(Model.NhanXetXetDuyet ?? "Không có")</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Chỉ tiêu kỳ thi -->
+        <div class="card mb-3">
+            <div class="card-header">
+                Chỉ tiêu kỳ thi
+            </div>
+
+            <div class="card-body">
+                <div class="stat-card mb-3">
+                    <div class="stat-icon tone-blue">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-value">
+                            @Model.SoSuatDaSuDung/@Model.SoChoThiToiDa
+                        </div>
+
+                        <div class="stat-label">
+                            Đã sử dụng / tối đa
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <span>Số chỗ còn lại</span>
+
+                    <strong class="@(Model.SoChoConLai > 0
+                                                               ? "text-success"
+                                                               : "text-danger")">
+                        @Model.SoChoConLai
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.CoTheXetDuyet)
+{
+    <!-- Duyệt hồ sơ -->
+    <div class="card mb-3">
+        <div class="card-header">
+            Duyệt hồ sơ
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Duyet"
+                  method="post"
+                  data-confirm="Bạn chắc chắn muốn duyệt hồ sơ này?"
+                  data-confirm-title="Xác nhận duyệt hồ sơ"
+                  data-confirm-ok="Duyệt hồ sơ"
+                  data-confirm-variant="btn-success">
+
+                <input type="hidden"
+                       name="MaHoSo"
+                       value="@Model.MaHoSo" />
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Nhận xét khi duyệt
+                    </label>
+
+                    <textarea name="NhanXet"
+                              class="form-control"
+                              rows="3"
+                              maxlength="1000"
+                              placeholder="Có thể để trống"></textarea>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success w-100">
+                    <i class="bi bi-check-circle"></i>
+                    Duyệt hồ sơ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Từ chối hồ sơ -->
+    <div class="card mb-3">
+        <div class="card-header">
+            Từ chối hồ sơ
+        </div>
+
+        <div class="card-body">
+            <form asp-action="TuChoi"
+                  method="post"
+                  data-confirm="Bạn chắc chắn muốn từ chối hồ sơ này?"
+                  data-confirm-title="Xác nhận từ chối hồ sơ"
+                  data-confirm-ok="Từ chối hồ sơ"
+                  data-confirm-variant="btn-danger">
+
+                <input type="hidden"
+                       name="MaHoSo"
+                       value="@Model.MaHoSo" />
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Lý do từ chối
+                        <span class="text-danger">*</span>
+                    </label>
+
+                    <textarea name="NhanXet"
+                              class="form-control"
+                              rows="3"
+                              maxlength="1000"
+                              required
+                              placeholder="Nhập lý do không đủ điều kiện"></textarea>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-outline-danger w-100">
+                    <i class="bi bi-x-circle"></i>
+                    Từ chối hồ sơ
+                </button>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        Hồ sơ này đã được xử lý và không thể xét duyệt lại.
+    </div>
+}
+
+        <a asp-action="Index"
+           class="btn btn-light w-100">
+            <i class="bi bi-arrow-left"></i>
+            Quay lại danh sách
+        </a>
+    </div>
+</div>

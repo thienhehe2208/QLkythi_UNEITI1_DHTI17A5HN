@@ -31,6 +31,10 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<IMatKhauService, MatKhauService>();
 
+// Module 5 - Phạm Quang Minh (23103100201): thời gian nghiệp vụ và xử lý lịch/kết quả thi.
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<Module5Service>();
+
 var app = builder.Build();
 
 // Tự áp dụng migration + nạp dữ liệu mẫu (tắt bằng "KhoiTaoDuLieu:TuDongMigrate": false)

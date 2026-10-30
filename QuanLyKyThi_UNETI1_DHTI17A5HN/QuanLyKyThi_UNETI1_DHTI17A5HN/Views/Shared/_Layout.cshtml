@@ -21,12 +21,16 @@
         ("ChungChi", "Index", "bi-award", "Chứng chỉ", Array.Empty<VaiTro>()),
         ("KyThi", "Index", "bi-calendar-event", "Kỳ thi", Array.Empty<VaiTro>()),
         ("HoSoDangKy", "Index", "bi-file-earmark-text", "Hồ sơ dự thi", Array.Empty<VaiTro>()),
+        ("LichThi", "Index", "bi-clock-history", "Lịch thi", Array.Empty<VaiTro>()),
+        ("KetQuaThi", "Index", "bi-clipboard-data", "Kết quả thi", Array.Empty<VaiTro>()),
         ("ThiSinh", "HoSoCuaToi", "bi-person-vcard", "Thông tin cá nhân", new[] { VaiTro.ThiSinh }),
     };
     var menuQuanTri = new List<(string Controller, string Action, string Icon, string Nhan, VaiTro[] VaiTros)>
     {
         ("TaiKhoan", "Index", "bi-people", "Tài khoản", new[] { VaiTro.Admin }),
         ("ThiSinh", "Index", "bi-person-lines-fill", "Thí sinh", new[] { VaiTro.Admin, VaiTro.CanBoKhaoThi }),
+        ("XetDuyetHoSo", "Index", "bi-clipboard-check", "Xét duyệt hồ sơ",
+        new[] { VaiTro.Admin, VaiTro.CanBoKhaoThi }),
     };
 
     bool DuocThay(VaiTro[] vaiTros) => vaiTros.Length == 0 || (vaiTro.HasValue && vaiTros.Contains(vaiTro.Value));
