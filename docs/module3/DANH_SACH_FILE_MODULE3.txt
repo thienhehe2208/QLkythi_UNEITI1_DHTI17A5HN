@@ -1,0 +1,52 @@
+DANH SÁCH THAY ĐỔI MODULE 3
+Nền ZIP SHA256: c1bee285b7cc60f743b87cacee2b991e8d97aa1fefdb803c361e0551878246d7
+Chỉ sửa 2 file nền; 118 file nền còn lại giữ nguyên byte.
+Không đổi schema, model, Migration, package, seed hoặc file riêng Module 5.
+
+FILE NỀN SỬA TỐI THIỂU:
+QuanLyKyThi_UNETI1_TI17A5HN/Program.cs
+QuanLyKyThi_UNETI1_TI17A5HN/Views/Shared/_Layout.cshtml
+
+FILE MỚI:
+QuanLyKyThi_UNETI1_TI17A5HN/Controllers/HoSoThiSinhController.cs
+QuanLyKyThi_UNETI1_TI17A5HN/Controllers/ThiSinhController.cs
+QuanLyKyThi_UNETI1_TI17A5HN/Services/Module3/LoiDuLieuModule3.cs
+QuanLyKyThi_UNETI1_TI17A5HN/Services/Module3/Module3Service.cs
+QuanLyKyThi_UNETI1_TI17A5HN/Services/Module3/NghiepVuModule3Exception.cs
+QuanLyKyThi_UNETI1_TI17A5HN/Services/Module3/QuyTacHoSoModule3.cs
+QuanLyKyThi_UNETI1_TI17A5HN/ViewModels/Module3/ChiTietHoSoThiViewModel.cs
+QuanLyKyThi_UNETI1_TI17A5HN/ViewModels/Module3/DanhSachHoSoThiViewModel.cs
+QuanLyKyThi_UNETI1_TI17A5HN/ViewModels/Module3/HoSoCaNhanFormViewModel.cs
+QuanLyKyThi_UNETI1_TI17A5HN/ViewModels/Module3/HoSoCaNhanViewModel.cs
+QuanLyKyThi_UNETI1_TI17A5HN/ViewModels/Module3/NopHoSoThiViewModel.cs
+QuanLyKyThi_UNETI1_TI17A5HN/ViewModels/Module3/QuanLyThiSinhViewModels.cs
+QuanLyKyThi_UNETI1_TI17A5HN/Views/HoSoThiSinh/Create.cshtml
+QuanLyKyThi_UNETI1_TI17A5HN/Views/HoSoThiSinh/Details.cshtml
+QuanLyKyThi_UNETI1_TI17A5HN/Views/HoSoThiSinh/Huy.cshtml
+QuanLyKyThi_UNETI1_TI17A5HN/Views/HoSoThiSinh/Index.cshtml
+QuanLyKyThi_UNETI1_TI17A5HN/Views/HoSoThiSinh/_ViewImports.cshtml
+QuanLyKyThi_UNETI1_TI17A5HN/Views/ThiSinh/CapNhatHoSo.cshtml
+QuanLyKyThi_UNETI1_TI17A5HN/Views/ThiSinh/Details.cshtml
+QuanLyKyThi_UNETI1_TI17A5HN/Views/ThiSinh/HoSoCaNhan.cshtml
+QuanLyKyThi_UNETI1_TI17A5HN/Views/ThiSinh/Index.cshtml
+QuanLyKyThi_UNETI1_TI17A5HN/Views/ThiSinh/_ThongTinCaNhan.cshtml
+QuanLyKyThi_UNETI1_TI17A5HN/Views/ThiSinh/_ViewImports.cshtml
+docs/module3/DANH_SACH_FILE_MODULE3.txt
+docs/module3/HOP_DONG_TICH_HOP_MODULE3.md
+docs/module3/HUONG_DAN_MERGE_MODULE3.md
+docs/module3/KIEM_THU_MODULE3.md
+docs/module3/README_MODULE3.md
+docs/module3/evidence/build.txt
+docs/module3/evidence/http_checks.txt
+docs/module3/evidence/migration.txt
+docs/module3/evidence/sql_checks.txt
+tests/Module3.Integration/Module3.Integration.csproj
+tests/Module3.Integration/Program.cs
+tests/Module3.Integration/http_checks.py
+
+FILE SINH RA KHI ĐÓNG GÓI:
+MODULE3_ONLY.patch — patch độc lập, không tự nhúng chính nó trong diff.
+
+NGUỒN ĐẶC TẢ SHA256:
+Module3_PhanTich_TrienKhai_Va_Merge_Main(1).txt 117c7229f0512d876ffa40feaf59eea4c449028c1859191250512fd6b1aa4c00
+De_tai_28_quan_ly_ky_thi_chung_chi_va_ho_so_dang_ky_du_thi_ASP_NET_Core_10_MVC_Nhom_5_ban(2).docx 47f72eb823310c09f4d563836554f8e621f556033c2b13fdee3e74cfc9c47d1c

@@ -1,0 +1,40 @@
+@* Phạm Quang Minh — 23103100201: Danh sách kết quả thi dùng page-header, card, table-app và phân trang theo nhóm. *@
+@model KetQuaThiIndexViewModel
+@{
+    ViewData["Title"] = "Kết quả thi";
+    var dangLoc = !string.IsNullOrWhiteSpace(Model.TuKhoa) || Model.KetQua.HasValue;
+}
+<div class="page-header">
+    <div><h1>Kết quả thi</h1><p class="page-subtitle">@(Model.CoQuyenQuanLy ? "Ghi nhận kết quả sau khi hoàn thành lịch thi." : "Xem kết quả thi đã được cán bộ xác nhận.")</p></div>
+    @if (Model.CoQuyenQuanLy) { <a asp-action="Create" class="btn btn-primary">Nhập kết quả</a> }
+</div>
+<div class="card">
+    <form asp-action="Index" method="get" class="filter-bar border-bottom">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-6"><label asp-for="TuKhoa" class="form-label"></label><input asp-for="TuKhoa" class="form-control" placeholder="Thí sinh hoặc kỳ thi" /></div>
+            <div class="col-md-3"><label asp-for="KetQua" class="form-label"></label><select asp-for="KetQua" asp-items="Html.GetEnumSelectList<KetQuaCuoiCung>()" class="form-select" data-auto-submit><option value="">Tất cả</option></select></div>
+            <div class="col-md-3 d-flex gap-2"><button class="btn btn-primary flex-fill">Lọc</button>@if (dangLoc) { <a asp-action="Index" class="btn btn-light">Xóa bộ lọc</a> }</div>
+        </div>
+    </form>
+    @if (!Model.DanhSach.Any())
+    {
+        <div class="empty-state"><h2>Chưa có kết quả thi phù hợp</h2><p class="mb-0">@(dangLoc ? "Thử đổi từ khóa hoặc bỏ bớt điều kiện lọc." : "Kết quả sẽ hiển thị sau khi cán bộ xác nhận.")</p></div>
+    }
+    else
+    {
+        <div class="table-responsive"><table class="table table-app table-hover align-middle">
+            <thead><tr><th>Thí sinh / Kỳ thi</th><th>Điểm đánh giá</th><th>Kết quả</th><th>Cập nhật (UTC+7)</th><th class="text-end">Thao tác</th></tr></thead>
+            <tbody>
+            @foreach (var item in Model.DanhSach)
+            {
+                <tr>
+                    <td><a class="title-link" asp-action="Details" asp-route-id="@item.MaKetQuaThi">@item.HoTenThiSinh</a><div class="sub">@item.TenKyThi · HS-@item.MaHoSo</div></td>
+                    <td>@(item.DiemDanhGia?.ToString("0.##") ?? "—")</td><td><partial name="_BadgeTrangThai" model="item.KetQua" /></td><td>@item.NgayCapNhat.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-end"><div class="table-actions"><a asp-action="Details" asp-route-id="@item.MaKetQuaThi" class="btn btn-light btn-sm" aria-label="Xem chi tiết của @item.HoTenThiSinh">Chi tiết</a></div></td>
+                </tr>
+            }
+            </tbody>
+        </table></div>
+    }
+    <div class="card-footer"><partial name="_PhanTrang" model="Model.PhanTrang" /></div>
+</div>

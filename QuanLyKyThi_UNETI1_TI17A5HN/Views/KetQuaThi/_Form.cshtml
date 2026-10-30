@@ -1,0 +1,10 @@
+@* Phạm Quang Minh — 23103100201: Các trường nhập/sửa kết quả dùng chung. *@
+@model KetQuaThiFormViewModel
+<input asp-for="MaKetQuaThi" type="hidden" />
+<div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+<div class="row g-3">
+    <div class="col-12"><label asp-for="MaHoSo" class="form-label required"></label><select asp-for="MaHoSo" asp-items="Model.HoSos" class="form-select"><option value="">Chọn hồ sơ</option></select><span asp-validation-for="MaHoSo" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="DiemDanhGia" class="form-label"></label><input asp-for="DiemDanhGia" type="number" min="0" max="100" step="0.01" class="form-control" /><span asp-validation-for="DiemDanhGia" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="KetQua" class="form-label required"></label><select asp-for="KetQua" asp-items="Html.GetEnumSelectList<KetQuaCuoiCung>()" class="form-select"><option value="">Chọn kết quả</option></select><span asp-validation-for="KetQua" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="NhanXet" class="form-label"></label><textarea asp-for="NhanXet" rows="4" class="form-control" maxlength="1000"></textarea><span asp-validation-for="NhanXet" class="text-danger"></span></div>
+</div>

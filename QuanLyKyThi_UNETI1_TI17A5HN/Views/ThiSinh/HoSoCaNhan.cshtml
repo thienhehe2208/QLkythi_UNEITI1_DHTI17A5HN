@@ -1,0 +1,15 @@
+@* Họ và tên/Mã sinh viên: CHƯA CUNG CẤP. Nội dung: xem hồ sơ của chính mình, không tạo dữ liệu qua GET. *@
+@model HoSoCaNhanViewModel
+@{ ViewData["Title"] = "Hồ sơ cá nhân"; }
+<div class="page-header"><div><h1>Hồ sơ cá nhân</h1><p class="page-subtitle">Thông tin dùng cho hồ sơ đăng ký dự thi của bạn.</p></div><a asp-action="CapNhatHoSo" class="btn btn-primary">@(Model.DaKhaiBao ? "Cập nhật thông tin" : "Khai báo hồ sơ")</a></div>
+@if (!Model.DaKhaiBao)
+{
+    <div class="card"><div class="empty-state"><h2>Bạn chưa khai báo hồ sơ cá nhân</h2><p>Hoàn thiện thông tin trước khi nộp hồ sơ đăng ký dự thi.</p><a asp-action="CapNhatHoSo" class="btn btn-primary">Khai báo hồ sơ</a></div></div>
+}
+else
+{
+    @if (Model.TrangThai == TrangThaiThiSinh.NgungHoatDong) { <div class="alert alert-warning">Hồ sơ thí sinh đang ngừng hoạt động. Bạn vẫn có thể cập nhật thông tin và theo dõi hồ sơ cũ; hãy liên hệ quản trị viên để được hỗ trợ nộp mới.</div> }
+    @if (Model.ThongTinCanBoSung.Any()) { <div class="alert alert-warning"><p class="mb-1">Cần bổ sung thông tin trước khi nộp:</p><ul class="mb-0">@foreach (var loi in Model.ThongTinCanBoSung) { <li>@loi</li> }</ul></div> }
+    <div class="card"><div class="card-body"><partial name="_ThongTinCaNhan" model="Model" /></div></div>
+    <div class="d-flex gap-2 flex-wrap mt-3"><a asp-controller="HoSoThiSinh" asp-action="Index" class="btn btn-light">Hồ sơ đã nộp</a><a asp-controller="HoSoThiSinh" asp-action="Create" class="btn btn-primary">Nộp hồ sơ dự thi</a></div>
+}

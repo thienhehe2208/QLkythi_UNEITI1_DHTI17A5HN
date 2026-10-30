@@ -1,0 +1,14 @@
+@* Họ và tên/Mã sinh viên: CHƯA CUNG CẤP. Nội dung: tra cứu thí sinh cho Admin/Cán bộ. *@
+@model QuanLyThiSinhViewModel
+@{ ViewData["Title"] = "Quản lý thí sinh"; }
+<div class="page-header"><div><h1>Quản lý thí sinh</h1><p class="page-subtitle">Tra cứu thông tin cá nhân và hồ sơ đăng ký liên quan.</p></div></div>
+<div class="card"><form asp-action="Index" method="get" class="filter-bar border-bottom"><div class="row g-2 align-items-end">
+<div class="col-md-6"><label for="TuKhoa" class="form-label">Tên, tài khoản, Email hoặc điện thoại</label><input asp-for="TuKhoa" class="form-control" /></div>
+<div class="col-md-3"><label for="TrangThai" class="form-label">Trạng thái</label><select asp-for="TrangThai" asp-items="Html.GetEnumSelectList<TrangThaiThiSinh>()" class="form-select"><option value="">Tất cả</option></select></div>
+<div class="col-md-3 d-flex gap-2"><button class="btn btn-primary">Tìm kiếm</button><a asp-action="Index" class="btn btn-light">Bỏ lọc</a></div>
+</div></form>
+@if (Model.DanhSach.Count == 0) { <div class="empty-state">Không có thí sinh phù hợp.</div> }
+else { <div class="table-responsive"><table class="table table-app align-middle"><thead><tr><th>Thí sinh / Tài khoản</th><th>Liên hệ</th><th>Trạng thái</th><th></th></tr></thead><tbody>
+@foreach (var t in Model.DanhSach) { <tr><td>@t.HoTen<div class="sub">TS-@t.MaThiSinh · @t.TenDangNhap</div></td><td>@t.Email<div class="sub">@t.SoDienThoai</div></td><td>@t.TrangThai.HienThi()</td><td><a asp-action="Details" asp-route-id="@t.MaThiSinh" class="btn btn-light btn-sm">Chi tiết</a></td></tr> }
+</tbody></table></div> }
+<div class="card-footer"><partial name="_PhanTrang" model="Model.PhanTrang" /></div></div>

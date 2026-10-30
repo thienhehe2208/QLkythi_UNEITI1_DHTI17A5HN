@@ -1,0 +1,15 @@
+@* Họ và tên/Mã sinh viên: CHƯA CUNG CẤP. Nội dung: hiển thị thông tin cá nhân Module 3. *@
+@model HoSoCaNhanViewModel
+<dl class="info-list">
+    <div class="row"><dt class="col-sm-4">Mã thí sinh</dt><dd class="col-sm-8">TS-@Model.MaThiSinh</dd></div>
+    <div class="row"><dt class="col-sm-4">Họ tên</dt><dd class="col-sm-8">@Model.HoTen</dd></div>
+    <div class="row"><dt class="col-sm-4">Ngày sinh / Giới tính</dt><dd class="col-sm-8">@Model.NgaySinh?.ToString("dd/MM/yyyy") / @Model.GioiTinh?.HienThi()</dd></div>
+    <div class="row"><dt class="col-sm-4">Email</dt><dd class="col-sm-8">@Model.Email</dd></div>
+    <div class="row"><dt class="col-sm-4">Số điện thoại</dt><dd class="col-sm-8">@Model.SoDienThoai</dd></div>
+    <div class="row"><dt class="col-sm-4">Địa chỉ</dt><dd class="col-sm-8">@(Model.DiaChi ?? "Chưa khai báo")</dd></div>
+    <div class="row"><dt class="col-sm-4">Trình độ hiện tại</dt><dd class="col-sm-8">@(Model.TrinhDoHienTai ?? "Chưa khai báo")</dd></div>
+    <div class="row"><dt class="col-sm-4">Nghề nghiệp</dt><dd class="col-sm-8">@(Model.NgheNghiep ?? "Chưa khai báo")</dd></div>
+    <div class="row"><dt class="col-sm-4">Số lần thi trước đây</dt><dd class="col-sm-8">@Model.SoLanThiTruocDay</dd></div>
+    <div class="row"><dt class="col-sm-4">Chứng chỉ đã có</dt><dd class="col-sm-8" style="white-space:pre-line">@(Model.ChungChiDaCo ?? "Chưa khai báo")</dd></div>
+    <div class="row"><dt class="col-sm-4">Trạng thái thí sinh</dt><dd class="col-sm-8">@Model.TrangThai.HienThi()</dd></div>
+</dl>

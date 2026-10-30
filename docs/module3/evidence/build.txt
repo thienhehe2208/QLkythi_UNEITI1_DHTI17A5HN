@@ -1,0 +1,7 @@
+  QuanLyKyThi_UNETI1_TI17A5HN -> /workspace/scratch/dcdcdaeadebb/module3_work/QLkythi_UNEITI1_DHTI17A5HN-main/QuanLyKyThi_UNETI1_TI17A5HN/bin/Debug/net10.0/QuanLyKyThi_UNETI1_TI17A5HN.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:00.90

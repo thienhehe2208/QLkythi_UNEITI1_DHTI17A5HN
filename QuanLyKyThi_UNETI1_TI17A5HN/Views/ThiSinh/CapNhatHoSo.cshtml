@@ -1,0 +1,19 @@
+@* Họ và tên/Mã sinh viên: CHƯA CUNG CẤP. Nội dung: khai báo/cập nhật các trường cá nhân được phép. *@
+@model HoSoCaNhanFormViewModel
+@{ ViewData["Title"] = "Cập nhật hồ sơ cá nhân"; }
+<div class="page-header"><div><h1>Cập nhật hồ sơ cá nhân</h1><p class="page-subtitle">Các trường có dấu * cần được khai báo đầy đủ.</p></div></div>
+<div class="row"><div class="col-xl-9"><form asp-action="CapNhatHoSo" method="post" class="card">
+<div class="card-body"><div asp-validation-summary="ModelOnly" class="alert alert-danger"></div><div class="row g-3">
+    <div class="col-md-6"><label asp-for="HoTen" class="form-label required"></label><input asp-for="HoTen" class="form-control" maxlength="100" autocomplete="name" /><span asp-validation-for="HoTen" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="NgaySinh" class="form-label required"></label><input asp-for="NgaySinh" type="date" class="form-control" asp-format="{0:yyyy-MM-dd}" /><span asp-validation-for="NgaySinh" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="GioiTinh" class="form-label required"></label><select asp-for="GioiTinh" asp-items="Html.GetEnumSelectList<GioiTinh>()" class="form-select"><option value="">Chọn giới tính</option></select><span asp-validation-for="GioiTinh" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="SoDienThoai" class="form-label required"></label><input asp-for="SoDienThoai" type="tel" class="form-control" maxlength="20" autocomplete="tel" /><span asp-validation-for="SoDienThoai" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="Email" class="form-label required"></label><input asp-for="Email" type="email" class="form-control" maxlength="150" autocomplete="email" /><span asp-validation-for="Email" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="SoLanThiTruocDay" class="form-label required"></label><input asp-for="SoLanThiTruocDay" type="number" min="0" step="1" class="form-control" /><span asp-validation-for="SoLanThiTruocDay" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="DiaChi" class="form-label"></label><input asp-for="DiaChi" class="form-control" maxlength="500" autocomplete="street-address" /><span asp-validation-for="DiaChi" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="TrinhDoHienTai" class="form-label"></label><input asp-for="TrinhDoHienTai" class="form-control" maxlength="100" /><span asp-validation-for="TrinhDoHienTai" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="NgheNghiep" class="form-label"></label><input asp-for="NgheNghiep" class="form-control" maxlength="150" /><span asp-validation-for="NgheNghiep" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="ChungChiDaCo" class="form-label"></label><textarea asp-for="ChungChiDaCo" rows="3" class="form-control" maxlength="500"></textarea><span asp-validation-for="ChungChiDaCo" class="text-danger"></span></div>
+</div></div><div class="card-footer d-flex gap-2"><button class="btn btn-primary">Lưu hồ sơ cá nhân</button><a asp-action="HoSoCaNhan" class="btn btn-light">Quay lại</a></div>
+</form></div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

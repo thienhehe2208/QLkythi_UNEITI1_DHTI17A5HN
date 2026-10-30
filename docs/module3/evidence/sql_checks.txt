@@ -1,0 +1,73 @@
+PASS: TC02: GET hồ sơ chưa khai báo không ghi dữ liệu
+PASS: TC01/02: tạo và cập nhật giữ đúng liên kết, không nhân bản
+PASS: TC10: cập nhật cá nhân không sửa TaiKhoan
+PASS: TC03–09: Họ tên trắng
+PASS: TC03–09: Email sai
+PASS: TC03–09: Email thiếu
+PASS: TC03–09: Điện thoại sai
+PASS: TC03–09: Điện thoại thiếu
+PASS: TC03–09: Ngày sinh thiếu
+PASS: TC03–09: Ngày sinh mặc định
+PASS: TC03–09: Ngày sinh tương lai
+PASS: TC03–09: Giới tính sai enum
+PASS: TC03–09: Giới tính thiếu
+PASS: TC03–09: Số lần âm
+PASS: TC03–09: Số lần thiếu
+PASS: TC03–09: Họ tên quá dài
+PASS: TC03–09: Điện thoại quá dài
+PASS: TC03–09: Email quá dài
+PASS: TC03–09: Địa chỉ quá dài
+PASS: TC03–09: Trình độ quá dài
+PASS: TC03–09: Nghề nghiệp quá dài
+PASS: TC03–09: Chứng chỉ quá dài
+PASS: TC15: tài khoản khóa bị chặn tại service
+PASS: TC54: cán bộ không tự khai báo thành thí sinh
+PASS: TC12: hai request khai báo chỉ có một hồ sơ cá nhân
+PASS: TC16: thiếu hồ sơ cá nhân
+PASS: TC19/31: form nộp không hợp lệ
+PASS: TC19/31: form nộp không hợp lệ
+PASS: TC19/31: form nộp không hợp lệ
+PASS: TC19/31: form nộp không hợp lệ
+PASS: TC13: hồ sơ Chờ duyệt, ngày hệ thống, xét duyệt null
+PASS: TC13: hồ sơ đúng chủ sở hữu
+PASS: TC34: B không đọc được chi tiết A
+PASS: TC46: B không hủy được A
+PASS: TC27: thí sinh khác cùng kỳ thi được xét độc lập
+PASS: TC26: cùng thí sinh kỳ thi khác được xét độc lập
+PASS: TC18: dữ liệu cá nhân cũ thiếu thông tin bị chặn
+PASS: TC25: chống trùng ChoDuyet
+PASS: TC25: chống trùng DuDieuKien
+PASS: TC25: chống trùng ChoThi
+PASS: TC25: chống trùng DaThi
+PASS: TC28/29: nộp mới sau DaHuy giữ lịch sử theo TXT
+PASS: TC28/29: nộp mới sau KhongDuDieuKien giữ lịch sử theo TXT
+PASS: TC28/29: nộp mới sau Dat giữ lịch sử theo TXT
+PASS: TC28/29: nộp mới sau KhongDat giữ lịch sử theo TXT
+PASS: TC20: chặn kỳ thi ChuaMo
+PASS: TC20: chặn kỳ thi TamDung
+PASS: TC20: chặn kỳ thi DaDong
+PASS: TC21: chưa tới hạn nhận
+PASS: TC22: vừa quá hạn
+PASS: TC23: đúng lúc bắt đầu và hạn cuối được nộp
+PASS: TC24: GET còn hạn
+PASS: TC24: POST kiểm tra lại hạn
+PASS: TC17: ngừng hoạt động chặn nộp
+PASS: TC11: sửa cá nhân không tự kích hoạt trạng thái
+PASS: TC53: ngừng thí sinh không khóa tài khoản
+PASS: TC54: cán bộ không đổi trạng thái Admin
+PASS: TC42: hủy giữ bản ghi
+PASS: TC43: hủy giữ ngày, người và nhận xét xét duyệt
+PASS: TC45/51: chặn hủy ChoThi
+PASS: TC45/51: chặn hủy DaThi
+PASS: TC45/51: chặn hủy Dat
+PASS: TC45/51: chặn hủy KhongDat
+PASS: TC45/51: chặn hủy DaHuy
+PASS: TC45/51: chặn hủy KhongDuDieuKien
+PASS: TC44/48: có lịch hiệu lực dù trạng thái lệch
+PASS: TC38/50: lịch hủy là lịch sử, hồ sơ được hủy
+PASS: TC40: đọc kết quả khớp trạng thái
+PASS: TC41: không lộ kết quả chưa khớp/công bố
+PASS: TC44: có kết quả thì chặn hủy
+PASS: TC32: hai DbContext nộp đồng thời chỉ commit một hồ sơ
+PASS: TC49: hủy đồng thời Module 5 lập lịch giữ nhất quán
+RESULT: 72 assertions passed; SQL Server Database Module3_Test_97f44a639a134ad2b1f881502af1f8b9

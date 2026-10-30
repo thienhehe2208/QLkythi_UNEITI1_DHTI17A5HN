@@ -1,0 +1,8 @@
+@* Họ và tên/Mã sinh viên: CHƯA CUNG CẤP. Nội dung: GET chỉ xác nhận, hủy qua POST có token. *@
+@model ChiTietHoSoThiViewModel
+@{ ViewData["Title"] = "Xác nhận hủy đăng ký"; }
+<div class="page-header"><div><h1>Xác nhận hủy đăng ký</h1><p class="page-subtitle">Hồ sơ HS-@Model.MaHoSo · @Model.TenKyThi</p></div></div>
+<div class="card"><div class="card-body"><p><strong>Thí sinh:</strong> @Model.HoTenThiSinh</p><p><strong>Chứng chỉ:</strong> @Model.TenChungChi</p><p><strong>Trạng thái:</strong> @Model.TrangThai.HienThi()</p>
+@if (Model.CoTheHuy) { <p class="mb-0">Xác nhận hủy hồ sơ đăng ký dự thi này? Hồ sơ sẽ chuyển sang Đã hủy và được giữ trong lịch sử.</p> }
+else { <div class="alert alert-warning mb-0">Hồ sơ hiện không được phép hủy. Chỉ có thể hủy khi Chờ duyệt hoặc Đủ điều kiện, không có lịch thi còn hiệu lực và chưa có kết quả.</div> }
+</div><div class="card-footer d-flex gap-2">@if (Model.CoTheHuy) { <form asp-action="HuyXacNhan" asp-route-id="@Model.MaHoSo" method="post"><button class="btn btn-danger">Xác nhận hủy đăng ký</button></form> }<a asp-action="Details" asp-route-id="@Model.MaHoSo" class="btn btn-light">Quay lại hồ sơ</a></div></div>

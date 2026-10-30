@@ -1,0 +1,28 @@
+@* Phạm Quang Minh — 23103100201: Khung form lịch thi dùng breadcrumb, card và partial theo nhóm. *@
+@model LichThiFormViewModel
+@{
+    var sua = Model.MaLichThi > 0;
+    ViewData["Title"] = sua ? "Sửa lịch thi" : "Lập lịch thi";
+}
+<div class="page-header"><div>
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a asp-action="Index">Lịch thi</a></li><li class="breadcrumb-item active" aria-current="page">@(sua ? "Chỉnh sửa" : "Thêm mới")</li></ol></nav>
+    <h1>@ViewData["Title"]</h1>
+    <p class="page-subtitle">Xếp lịch cho hồ sơ đủ điều kiện dự thi. Thời gian dùng giờ Việt Nam (UTC+7).</p>
+</div></div>
+<div class="row g-3">
+    <div class="col-lg-8">
+        <form asp-action="@(sua ? "Edit" : "Create")" asp-route-id="@(sua ? Model.MaLichThi : (int?)null)" method="post" class="card">
+            <div class="card-header">Thông tin lịch thi</div>
+            <div class="card-body">
+                @if (Model.HoSos.Count == 0) { <div class="alert alert-info">Chưa có hồ sơ đủ điều kiện để lập lịch. Cần hồ sơ đã duyệt và chưa có lịch hiệu lực.</div> }
+                <partial name="_Form" model="Model" />
+            </div>
+            <div class="card-footer d-flex gap-2"><button class="btn btn-primary">Lưu lịch thi</button><a asp-action="Index" class="btn btn-light">Quay lại</a></div>
+        </form>
+    </div>
+    <div class="col-lg-4"><div class="card"><div class="card-header">Lưu ý</div><div class="card-body text-muted small">
+        <p>Mỗi hồ sơ chỉ có một lịch thi còn hiệu lực. Lịch mới phải ở tương lai, không trùng thí sinh, giám thị hoặc phòng thi.</p>
+        <p class="mb-0">Khi sửa, hồ sơ dự thi được giữ nguyên. Dùng tên giám thị và mã phòng thống nhất trong nhóm.</p>
+    </div></div></div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

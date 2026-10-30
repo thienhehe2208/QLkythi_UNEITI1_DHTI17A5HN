@@ -1,0 +1,14 @@
+@* Họ và tên/Mã sinh viên: CHƯA CUNG CẤP. Nội dung: hồ sơ đã nộp của chính mình. *@
+@model DanhSachHoSoThiViewModel
+@{ ViewData["Title"] = "Hồ sơ đã nộp"; }
+<div class="page-header"><div><h1>Hồ sơ đã nộp</h1><p class="page-subtitle">Theo dõi xét duyệt, lịch thi và kết quả của bạn.</p></div><a asp-action="Create" class="btn btn-primary">Nộp hồ sơ mới</a></div>
+<div class="card"><form asp-action="Index" method="get" class="filter-bar border-bottom"><div class="row g-2 align-items-end">
+<div class="col-md-6"><label for="TuKhoa" class="form-label">Kỳ thi hoặc chứng chỉ</label><input asp-for="TuKhoa" class="form-control" /></div>
+<div class="col-md-3"><label for="TrangThai" class="form-label">Trạng thái hồ sơ</label><select asp-for="TrangThai" asp-items="Html.GetEnumSelectList<TrangThaiHoSo>()" class="form-select"><option value="">Tất cả</option></select></div>
+<div class="col-md-3 d-flex gap-2"><button class="btn btn-primary">Lọc</button><a asp-action="Index" class="btn btn-light">Bỏ lọc</a></div>
+</div></form>
+@if (Model.DanhSach.Count == 0) { <div class="empty-state"><h2>Chưa có hồ sơ phù hợp</h2><p>Thử thay đổi bộ lọc hoặc chọn kỳ thi để nộp hồ sơ mới.</p><a asp-action="Create" class="btn btn-primary">Chọn kỳ thi</a></div> }
+else { <div class="table-responsive"><table class="table table-app align-middle"><thead><tr><th>Hồ sơ / Kỳ thi</th><th>Ngày nộp (UTC+7)</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>
+@foreach (var h in Model.DanhSach) { <tr><td><a asp-action="Details" asp-route-id="@h.MaHoSo" class="title-link">HS-@h.MaHoSo · @h.TenKyThi</a><div class="sub">@h.TenChungChi</div></td><td>@h.NgayNop.ToString("dd/MM/yyyy HH:mm")</td><td><partial name="_BadgeTrangThai" model="h.TrangThai" /></td><td><div class="table-actions"><a asp-action="Details" asp-route-id="@h.MaHoSo" class="btn btn-light btn-sm">Theo dõi</a>@if (h.CoTheHuy) { <a asp-action="Huy" asp-route-id="@h.MaHoSo" class="btn btn-outline-danger btn-sm">Hủy đăng ký</a> }</div></td></tr> }
+</tbody></table></div> }
+<div class="card-footer"><partial name="_PhanTrang" model="Model.PhanTrang" /></div></div>

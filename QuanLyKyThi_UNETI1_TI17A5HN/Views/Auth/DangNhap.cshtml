@@ -1,0 +1,57 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Form đăng nhập, hiển thị lỗi tài khoản không tồn tại/sai mật khẩu/bị khóa.
+   ============================================================ *@
+@* Phạm Quang Minh — 23103100201: Dùng nhãn chữ cho nút mật khẩu khi main chưa có bộ icon. *@
+@model DangNhapViewModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+    Layout = "_LayoutAuth";
+}
+
+<div class="d-lg-none d-flex align-items-center gap-2 fw-semibold mb-4">
+    <span class="app-brand-logo"><i class="bi bi-mortarboard"></i></span> Quản lý kỳ thi chứng chỉ
+</div>
+
+<h2 class="mb-1">Đăng nhập</h2>
+<p class="text-muted mb-4">Sử dụng tài khoản được cấp để tiếp tục.</p>
+
+<form asp-action="DangNhap" method="post" novalidate>
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger d-flex gap-2 py-2 small" role="alert"></div>
+
+    <div class="mb-3">
+        <label asp-for="TenDangNhap" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
+            <input asp-for="TenDangNhap" class="form-control" autocomplete="username" autofocus placeholder="vd. admin" />
+        </div>
+        <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+    </div>
+
+    <div class="mb-4">
+        <label asp-for="MatKhau" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
+            <input asp-for="MatKhau" class="form-control" autocomplete="current-password" placeholder="••••••••" />
+            <button class="btn btn-outline-secondary" type="button" data-toggle-password="MatKhau" aria-label="Hiện mật khẩu">
+                <span data-password-label>Hiện</span>
+            </button>
+        </div>
+        <span asp-validation-for="MatKhau" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 py-2">
+        <i class="bi bi-box-arrow-in-right"></i>Đăng nhập
+    </button>
+</form>
+
+<p class="text-muted small mt-4 mb-0">
+    <i class="bi bi-info-circle me-1"></i>Quên mật khẩu? Liên hệ quản trị viên để được đặt lại.
+</p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

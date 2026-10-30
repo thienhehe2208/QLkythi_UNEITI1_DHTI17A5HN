@@ -1,0 +1,45 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Layout riêng cho trang đăng nhập (chia đôi màn hình, không có menu).
+   ============================================================ *@
+@* Phạm Quang Minh — 23103100201: Bỏ tham chiếu bộ icon chưa có trên main để tránh tài nguyên 404. *@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · Quản lý kỳ thi chứng chỉ</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="auth-page">
+        <section class="auth-hero">
+            <div class="d-flex align-items-center gap-2 fw-semibold">
+                <span class="app-brand-logo"><i class="bi bi-mortarboard"></i></span> Quản lý kỳ thi chứng chỉ
+            </div>
+            <div>
+                <h1 class="mb-3">Tổ chức kỳ thi chứng chỉ<br />gọn gàng, minh bạch.</h1>
+                <p class="mb-4">Công bố kỳ thi, tiếp nhận và xét duyệt hồ sơ, lập lịch thi và ghi nhận kết quả trên một hệ thống.</p>
+                <div class="auth-feature"><i class="bi bi-award"></i><div>Quản lý chứng chỉ và kỳ thi tập trung</div></div>
+                <div class="auth-feature"><i class="bi bi-file-earmark-check"></i><div>Theo dõi hồ sơ đăng ký theo từng trạng thái</div></div>
+                <div class="auth-feature"><i class="bi bi-calendar2-week"></i><div>Lập lịch thi, chống trùng lịch, công bố kết quả</div></div>
+            </div>
+            <div class="small" style="color:#8e9bc0">Đề tài 28 · Nhóm 1 · TI17A5HN</div>
+        </section>
+        <main class="auth-form-wrap">
+            <div class="auth-form">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <partial name="_ThongBao" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

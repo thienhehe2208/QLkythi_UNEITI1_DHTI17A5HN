@@ -1,0 +1,75 @@
+@* Phạm Quang Minh — 23103100201: Layout Module 5 theo menu ngang, avatar và modal xác nhận của nhóm. *@
+@{
+    var session = Context.Session;
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var hoTen = session.LayHoTen() ?? "";
+    var tu = hoTen.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    var avatar = tu.Length == 0 ? "?" : (tu[0][..1] + (tu.Length > 1 ? tu[^1][..1] : "")).ToUpper();
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · Quản lý kỳ thi chứng chỉ</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<header class="app-navbar navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-xxl">
+        <a class="navbar-brand app-brand" asp-controller="Module5" asp-action="Index">
+            <span class="app-brand-logo" aria-hidden="true">Q</span>
+            <span>Quản lý kỳ thi<small>Chứng chỉ &amp; hồ sơ dự thi</small></span>
+        </a>
+        @if (session.DaDangNhap())
+        {
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuChinh" aria-controls="menuChinh" aria-expanded="false" aria-label="Mở menu"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="menuChinh">
+                <ul class="navbar-nav app-nav me-auto">
+                    @* Module 3 — Họ và tên/Mã sinh viên: CHƯA CUNG CẤP; đóng góp: thêm menu theo vai trò. *@
+                    @if (session.LaVaiTro(VaiTro.ThiSinh))
+                    {
+                        <li class="nav-item"><a class="nav-link @(controller == "ThiSinh" ? "active" : "")" asp-controller="ThiSinh" asp-action="HoSoCaNhan">Hồ sơ cá nhân</a></li>
+                        <li class="nav-item"><a class="nav-link @(controller == "HoSoThiSinh" ? "active" : "")" asp-controller="HoSoThiSinh" asp-action="Index">Hồ sơ đã nộp</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="HoSoThiSinh" asp-action="Create">Nộp hồ sơ</a></li>
+                    }
+                    @if (session.LaVaiTro(VaiTro.Admin, VaiTro.CanBoKhaoThi))
+                    {
+                        <li class="nav-item"><a class="nav-link @(controller == "ThiSinh" ? "active" : "")" asp-controller="ThiSinh" asp-action="Index">Quản lý thí sinh</a></li>
+                    }
+                    @foreach (var menu in new[] { ("Module5", "Trang chủ"), ("LichThi", "Lịch thi"), ("KetQuaThi", "Kết quả thi") })
+                    {
+                        <li class="nav-item"><a class="nav-link @(controller == menu.Item1 ? "active" : "")" aria-current="@(controller == menu.Item1 ? "page" : null)" asp-controller="@menu.Item1" asp-action="Index">@menu.Item2</a></li>
+                    }
+                </ul>
+                <div class="dropdown">
+                    <button class="user-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="avatar">@avatar</span><span class="text-start"><span class="ten d-block">@hoTen</span><span class="vai-tro">@session.LayVaiTro()?.HienThi()</span></span><span aria-hidden="true">⌄</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                        <li><a class="dropdown-item" asp-controller="Auth" asp-action="DoiMatKhau">Đổi mật khẩu</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><form asp-controller="Auth" asp-action="DangXuat" method="post"><button class="dropdown-item text-danger">Đăng xuất</button></form></li>
+                    </ul>
+                </div>
+            </div>
+        }
+        else { <a asp-controller="Auth" asp-action="DangNhap" class="btn btn-light btn-sm">Đăng nhập</a> }
+    </div>
+</header>
+<main class="app-content"><div class="container-xxl">@RenderBody()</div></main>
+<footer class="app-footer"><div class="container-xxl d-flex flex-wrap justify-content-between gap-2"><span>© 2026 · QuanLyKyThi_UNETI1_TI17A5HN</span><span>Đề tài 28 · Nhóm 1 · TI17A5HN</span></div></footer>
+<partial name="_ThongBao" />
+<div class="modal fade" id="modalXacNhan" tabindex="-1" aria-labelledby="modalXacNhanTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow">
+        <div class="modal-header border-0 pb-0"><h2 class="modal-title fs-5" id="modalXacNhanTitle">Xác nhận thao tác</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Đóng"></button></div>
+        <div class="modal-body"><p class="text-muted mb-0"></p></div>
+        <div class="modal-footer border-0 pt-0"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Quay lại</button><button type="button" class="btn btn-primary" data-modal-ok>Đồng ý</button></div>
+    </div></div>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

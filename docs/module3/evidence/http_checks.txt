@@ -1,0 +1,60 @@
+PASS: Chưa đăng nhập bị chặn: /ThiSinh/HoSoCaNhan
+PASS: Chưa đăng nhập bị chặn: /ThiSinh/CapNhatHoSo
+PASS: Chưa đăng nhập bị chặn: /ThiSinh
+PASS: Chưa đăng nhập bị chặn: /HoSoThiSinh
+PASS: Chưa đăng nhập bị chặn: /HoSoThiSinh/Create
+PASS: Chưa đăng nhập bị chặn: /HoSoThiSinh/Details/1
+PASS: Chưa đăng nhập bị chặn: /HoSoThiSinh/Huy/1
+PASS: Trang đăng nhập mở được: m3_a
+PASS: Đăng nhập thực qua AuthController: m3_a
+PASS: Trang đăng nhập mở được: m3_b
+PASS: Đăng nhập thực qua AuthController: m3_b
+PASS: Trang đăng nhập mở được: m3_admin
+PASS: Đăng nhập thực qua AuthController: m3_admin
+PASS: Trang đăng nhập mở được: m3_staff
+PASS: Đăng nhập thực qua AuthController: m3_staff
+PASS: Trang đăng nhập mở được: m3_fresh
+PASS: Đăng nhập thực qua AuthController: m3_fresh
+PASS: Thí sinh bị chặn URL quản trị
+PASS: Thí sinh bị chặn URL quản trị
+PASS: Trang quản trị/hồi quy Module 5: /ThiSinh
+PASS: Trang quản trị/hồi quy Module 5: /LichThi
+PASS: Trang quản trị/hồi quy Module 5: /KetQuaThi
+PASS: Admin/cán bộ không nộp thay thí sinh
+PASS: Trang quản trị/hồi quy Module 5: /ThiSinh
+PASS: Trang quản trị/hồi quy Module 5: /LichThi
+PASS: Trang quản trị/hồi quy Module 5: /KetQuaThi
+PASS: Admin/cán bộ không nộp thay thí sinh
+PASS: Menu Module 3 và Module 5 cùng tồn tại
+PASS: Form cập nhật Razor mở được
+PASS: Tài khoản mới có trạng thái rỗng
+PASS: GET lặp không tạo hồ sơ
+PASS: POST cá nhân hợp lệ bỏ qua trường giả mạo
+PASS: Cá nhân đúng A và không đổi trạng thái giả mạo
+PASS: Không cập nhật nhầm hồ sơ B
+PASS: POST thiếu trường số lần không bị hiểu thành 0
+PASS: POST thiếu anti-forgery bị chặn
+PASS: Chi tiết quản trị Razor và nút Admin mở được
+PASS: Cán bộ chỉ tra cứu, không có quyền đổi trạng thái
+PASS: POST trực tiếp của cán bộ bị bộ lọc quyền chặn
+PASS: Chọn trước kỳ thi từ link Module 2
+PASS: Kỳ thi sai không âm thầm chọn kỳ khác
+PASS: POST nộp hồ sơ qua toàn bộ MVC pipeline
+PASS: POST bỏ qua trạng thái/ngày/xét duyệt giả mạo
+PASS: Chi tiết xử lý lịch/kết quả chưa có
+PASS: Đổi ID URL không đọc được hồ sơ A
+PASS: GET xác nhận hủy của người khác bị chặn
+PASS: POST trùng báo lỗi và giữ dropdown
+PASS: Phân trang ngoài biên vẫn hiện dữ liệu đúng chủ sở hữu
+PASS: GET xác nhận hủy mở được
+PASS: GET hủy không thay đổi dữ liệu
+PASS: POST hủy thiếu token bị chặn
+PASS: POST hủy hợp lệ
+PASS: Hồ sơ chuyển Đã hủy và vẫn xem được
+PASS: Hồi quy sau tích hợp: /LichThi
+PASS: Hồi quy sau tích hợp: /KetQuaThi
+PASS: Hồi quy sau tích hợp: /Home
+PASS: Hồi quy sau tích hợp: /
+PASS: Đăng xuất thật
+PASS: Session cũ không tiếp tục xem hồ sơ sau đăng xuất
+RESULT: 59 HTTP assertions passed

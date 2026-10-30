@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__DefaultConnection": "Server=.\\SQLEXPRESS;Database=QuanLyKyThi_UNETI1_TI17A5HN;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5075"
+    },
+    "https": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__DefaultConnection": "Server=.\\SQLEXPRESS;Database=QuanLyKyThi_UNETI1_TI17A5HN;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7044;http://localhost:5075"
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__DefaultConnection": "Server=.\\SQLEXPRESS;Database=QuanLyKyThi_UNETI1_TI17A5HN;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
+      }
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:59766/",
+      "sslPort": 44389
+    }
+  }
+}
