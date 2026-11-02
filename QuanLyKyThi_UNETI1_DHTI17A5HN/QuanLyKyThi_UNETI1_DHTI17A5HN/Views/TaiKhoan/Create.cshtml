@@ -1,0 +1,84 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Form thêm tài khoản (Admin) - kiểm tra trùng tên đăng nhập, email, mật khẩu.
+   ============================================================ *@
+@model TaiKhoanTaoViewModel
+@{
+    ViewData["Title"] = "Thêm tài khoản";
+}
+
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Tài khoản</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm mới</li>
+            </ol>
+        </nav>
+        <h1>Thêm tài khoản</h1>
+    </div>
+</div>
+
+<form asp-action="Create" method="post" class="card" style="max-width: 760px">
+    <div class="card-body">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+
+        <h2 class="form-section-title">Thông tin người dùng</h2>
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label asp-for="HoTen" class="form-label required"></label>
+                <input asp-for="HoTen" class="form-control" placeholder="vd. Nguyễn Văn An" />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label required"></label>
+                <input asp-for="Email" class="form-control" type="email" placeholder="ten@vidu.vn" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="VaiTro" class="form-label required"></label>
+                <select asp-for="VaiTro" class="form-select" asp-items="Html.GetEnumSelectList<VaiTro>()">
+                    <option value="">-- Chọn vai trò --</option>
+                </select>
+                <span asp-validation-for="VaiTro" class="text-danger"></span>
+            </div>
+        </div>
+
+        <h2 class="form-section-title">Thông tin đăng nhập</h2>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="TenDangNhap" class="form-label required"></label>
+                <input asp-for="TenDangNhap" class="form-control" autocomplete="off" />
+                <div class="form-text">3–50 ký tự: chữ không dấu, số, dấu chấm, gạch dưới.</div>
+                <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 d-none d-md-block"></div>
+            <div class="col-md-6">
+                <label asp-for="MatKhau" class="form-label required"></label>
+                <div class="input-group">
+                    <input asp-for="MatKhau" class="form-control" autocomplete="new-password" />
+                    <button class="btn btn-outline-secondary" type="button" data-toggle-password="MatKhau" aria-label="Hiện mật khẩu"><i class="bi bi-eye"></i></button>
+                </div>
+                <div class="form-text">Tối thiểu 6 ký tự. Mật khẩu được mã hóa trước khi lưu.</div>
+                <span asp-validation-for="MatKhau" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="XacNhanMatKhau" class="form-label required"></label>
+                <input asp-for="XacNhanMatKhau" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="XacNhanMatKhau" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Tài khoản mới ở trạng thái Hoạt động.</span>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-light">Hủy</a>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Tạo tài khoản</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,30 @@
+@* Phạm Quang Minh — 23103100201: Chi tiết lịch theo bố cục và data-confirm chung của nhóm. *@
+@model LichThiChiTietViewModel
+@{ ViewData["Title"] = "Chi tiết lịch thi"; }
+<div class="page-header">
+    <div><nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a asp-action="Index">Lịch thi</a></li><li class="breadcrumb-item active" aria-current="page">Chi tiết</li></ol></nav>
+    <div class="d-flex gap-2 align-items-center flex-wrap"><h1>Lịch thi #@Model.MaLichThi</h1><partial name="_BadgeTrangThai" model="Model.TrangThai" /></div><p class="page-subtitle">@Model.HoTenThiSinh · @Model.TenKyThi</p></div>
+    <div class="d-flex gap-2 flex-wrap">
+        @if (Model.CoTheSua) { <a asp-action="Edit" asp-route-id="@Model.MaLichThi" class="btn btn-primary">Sửa lịch</a> }
+        @if (Model.CoTheHuy) { <form asp-action="Huy" asp-route-id="@Model.MaLichThi" method="post" data-confirm="Hủy lịch và trả hồ sơ về Đủ điều kiện để lập lại lịch?" data-confirm-ok="Hủy lịch" data-confirm-variant="btn-danger"><button class="btn btn-outline-danger">Hủy lịch</button></form> }
+        @if (Model.CoTheHoanThanh) { <form asp-action="HoanThanh" asp-route-id="@Model.MaLichThi" method="post" data-confirm="Xác nhận thí sinh đã hoàn thành kỳ thi? Hồ sơ sẽ chuyển sang Đã thi." data-confirm-ok="Xác nhận đã thi"><button class="btn btn-success">Xác nhận đã thi</button></form> }
+        @if (Model.CoTheNhapKetQua) { <a asp-controller="KetQuaThi" asp-action="Create" asp-route-maHoSo="@Model.MaHoSo" class="btn btn-primary">Nhập kết quả</a> }
+    </div>
+</div>
+<div class="row g-3">
+    <div class="col-lg-8"><div class="card"><div class="card-header">Thông tin lịch thi</div><div class="card-body py-1"><dl class="info-list">
+        <div class="row"><dt class="col-sm-4">Thời gian bắt đầu</dt><dd class="col-sm-8">@Model.ThoiGianBatDau.ToString("dd/MM/yyyy HH:mm") (UTC+7)</dd></div>
+        <div class="row"><dt class="col-sm-4">Thời gian kết thúc</dt><dd class="col-sm-8">@Model.ThoiGianKetThuc.ToString("dd/MM/yyyy HH:mm") (UTC+7)</dd></div>
+        <div class="row"><dt class="col-sm-4">Hình thức</dt><dd class="col-sm-8">@Model.HinhThucThi.HienThi()</dd></div>
+        <div class="row"><dt class="col-sm-4">Địa điểm / Liên kết</dt><dd class="col-sm-8">@Model.DiaDiemHoacLienKet</dd></div>
+        <div class="row"><dt class="col-sm-4">Phòng thi</dt><dd class="col-sm-8">@(Model.PhongThi ?? "Không sử dụng")</dd></div>
+        <div class="row"><dt class="col-sm-4">Giám thị</dt><dd class="col-sm-8">@Model.GiamThi</dd></div>
+        <div class="row"><dt class="col-sm-4">Ghi chú</dt><dd class="col-sm-8" style="white-space:pre-line">@(Model.GhiChu ?? "Chưa có ghi chú")</dd></div>
+    </dl></div></div></div>
+    <div class="col-lg-4"><div class="card"><div class="card-header">Hồ sơ dự thi</div><div class="card-body">
+        <p class="fw-semibold mb-1">@Model.HoTenThiSinh</p><p class="text-muted small">@Model.TenKyThi · HS-@Model.MaHoSo</p><partial name="_BadgeTrangThai" model="Model.TrangThaiHoSo" />
+        <p class="text-muted small mt-3 mb-0">Hủy lịch chỉ áp dụng trước giờ bắt đầu. Xác nhận đã thi chỉ thực hiện sau giờ kết thúc.</p>
+    </div></div></div>
+</div>
+<a asp-action="Index" class="btn btn-link px-0 mt-3">← Quay lại danh sách</a>
+

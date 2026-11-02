@@ -1,0 +1,60 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Xác nhận xóa chứng chỉ - chặn khi còn kỳ thi tham chiếu.
+   ============================================================ *@
+@model ChungChi
+@{
+    ViewData["Title"] = "Xóa chứng chỉ";
+    var soKyThi = ViewBag.SoKyThi as int? ?? 0;
+}
+
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Chứng chỉ</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.MaChungChi">@Model.TenChungChi</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Xóa</li>
+            </ol>
+        </nav>
+        <h1>Xóa chứng chỉ</h1>
+    </div>
+</div>
+
+<div class="card" style="max-width: 640px">
+    <div class="card-body">
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <span class="stat-icon tone-blue"><i class="bi bi-award"></i></span>
+            <div>
+                <div class="fw-bold">@Model.TenChungChi</div>
+                <div class="text-muted small">@(Model.EmailLienHe ?? "Chưa có email liên hệ") · @soKyThi kỳ thi liên quan</div>
+                <div class="mt-1"><partial name="_BadgeTrangThai" model="Model.TrangThai" /></div>
+            </div>
+        </div>
+
+        @if (soKyThi > 0)
+        {
+            <div class="alert alert-warning d-flex gap-2 mb-0">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <div>Không thể xóa: chứng chỉ đang được <strong>@soKyThi kỳ thi</strong> sử dụng. Hãy chuyển sang <strong>Ngừng hoạt động</strong> thay vì xóa.</div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger d-flex gap-2 mb-0">
+                <i class="bi bi-exclamation-octagon-fill"></i>
+                <div>Chứng chỉ sẽ bị xóa vĩnh viễn và không thể khôi phục.</div>
+            </div>
+        }
+    </div>
+    <div class="card-footer d-flex justify-content-end gap-2">
+        <a asp-action="Details" asp-route-id="@Model.MaChungChi" class="btn btn-light">Quay lại</a>
+        @if (soKyThi == 0)
+        {
+            <form asp-action="Delete" asp-route-id="@Model.MaChungChi" method="post">
+                <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i>Xóa vĩnh viễn</button>
+            </form>
+        }
+    </div>
+</div>

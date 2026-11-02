@@ -1,0 +1,64 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Form sửa tài khoản (Admin) - không sửa tên đăng nhập, mật khẩu, trạng thái tại đây.
+   ============================================================ *@
+@model TaiKhoanSuaViewModel
+@{
+    ViewData["Title"] = "Sửa tài khoản";
+}
+
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Tài khoản</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.MaTaiKhoan">@Model.TenDangNhap</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Sửa</li>
+            </ol>
+        </nav>
+        <h1>Sửa tài khoản</h1>
+    </div>
+</div>
+
+<form asp-action="Edit" asp-route-id="@Model.MaTaiKhoan" method="post" class="card" style="max-width: 760px">
+    <input type="hidden" asp-for="MaTaiKhoan" />
+    <div class="card-body">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="TenDangNhap" class="form-label"></label>
+                <input asp-for="TenDangNhap" class="form-control" disabled />
+                <div class="form-text">Tên đăng nhập không thể thay đổi.</div>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="TrangThai" class="form-label"></label>
+                <div class="pt-2"><partial name="_BadgeTrangThai" model="Model.TrangThai" /></div>
+                <div class="form-text">Đổi bằng nút Khóa/Mở khóa ở trang chi tiết.</div>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="HoTen" class="form-label required"></label>
+                <input asp-for="HoTen" class="form-control" />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label required"></label>
+                <input asp-for="Email" class="form-control" type="email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="VaiTro" class="form-label required"></label>
+                <select asp-for="VaiTro" class="form-select" asp-items="Html.GetEnumSelectList<VaiTro>()"></select>
+                <span asp-validation-for="VaiTro" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end gap-2">
+        <a asp-action="Details" asp-route-id="@Model.MaTaiKhoan" class="btn btn-light">Hủy</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Lưu thay đổi</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

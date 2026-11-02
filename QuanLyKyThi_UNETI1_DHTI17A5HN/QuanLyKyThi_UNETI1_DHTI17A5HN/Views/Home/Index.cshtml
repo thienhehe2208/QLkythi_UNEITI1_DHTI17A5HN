@@ -1,0 +1,178 @@
+@* ============================================================
+   Họ và tên: Lương Thế Thiện
+   Mã sinh viên: 21103101237
+   Nội dung: Trang tổng quan theo vai trò; dashboard quản trị dành
+   cho Admin và Cán bộ khảo thí sử dụng số liệu thật từ hệ thống.
+   ============================================================ *@
+@model TrangChuViewModel
+@{
+    ViewData["Title"] = "Tổng quan";
+    var session = Context.Session;
+    var vaiTro = session.LayVaiTro()!.Value;
+    var laQuanTri = vaiTro is VaiTro.Admin or VaiTro.CanBoKhaoThi;
+    var gio = DateTime.Now.Hour;
+    var loiChao = gio < 11 ? "Chào buổi sáng" : gio < 14 ? "Chào buổi trưa" : gio < 18 ? "Chào buổi chiều" : "Chào buổi tối";
+    int TyLeHoSo(int soLuong) => Model.TongHoSo == 0 ? 0 : (int)Math.Round(soLuong * 100d / Model.TongHoSo);
+    var tongKetQua = Model.SoKetQuaDat + Model.SoKetQuaKhongDat;
+    var tyLeDat = tongKetQua == 0 ? 0 : (int)Math.Round(Model.SoKetQuaDat * 100d / tongKetQua);
+}
+
+@if (laQuanTri)
+{
+    <div class="dashboard-heading">
+        <div>
+            <p class="dashboard-eyebrow">TRUNG TÂM ĐIỀU HÀNH</p>
+            <h1>@loiChao, @session.LayHoTen()</h1>
+            <p>Theo dõi nhanh tình hình đăng ký và tổ chức kỳ thi trong hệ thống.</p>
+        </div>
+        <div class="dashboard-date"><i class="bi bi-calendar3"></i><span>@DateTime.Now.ToString("dddd, dd/MM/yyyy", new System.Globalization.CultureInfo("vi-VN"))</span></div>
+    </div>
+
+    <div class="row g-3 dashboard-stats">
+        <div class="col-sm-6 col-xl-3">
+            <a class="dashboard-stat accent-blue" asp-controller="ChungChi" asp-action="Index">
+                <div><span class="dashboard-stat-label">Chứng chỉ hoạt động</span><strong>@Model.SoChungChiHoatDong</strong><small>Danh mục đang sử dụng</small></div>
+                <span class="dashboard-stat-icon"><i class="bi bi-award"></i></span>
+            </a>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <a class="dashboard-stat accent-amber" asp-controller="KyThi" asp-action="Index">
+                <div><span class="dashboard-stat-label">Tổng số kỳ thi</span><strong>@Model.SoKyThi</strong><small>Đã tạo trên hệ thống</small></div>
+                <span class="dashboard-stat-icon"><i class="bi bi-calendar-event"></i></span>
+            </a>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <a class="dashboard-stat accent-violet" asp-controller="XetDuyetHoSo" asp-action="Index" asp-route-trangThai="ChoDuyet">
+                <div><span class="dashboard-stat-label">Hồ sơ chờ duyệt</span><strong>@Model.SoHoSoChoDuyet</strong><small>Cần cán bộ xử lý</small></div>
+                <span class="dashboard-stat-icon"><i class="bi bi-clipboard-check"></i></span>
+            </a>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <a class="dashboard-stat accent-teal" asp-controller="LichThi" asp-action="Index">
+                <div><span class="dashboard-stat-label">Lịch thi sắp tới</span><strong>@Model.SoLichThiSapToi</strong><small>Đang chờ tổ chức</small></div>
+                <span class="dashboard-stat-icon"><i class="bi bi-clock-history"></i></span>
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-1">
+        <div class="col-xl-8">
+            <section class="dashboard-panel h-100">
+                <div class="dashboard-panel-header">
+                    <div><h2>Tình trạng hồ sơ dự thi</h2><p>Phân bố hồ sơ theo các bước xét duyệt chính</p></div>
+                    <a asp-controller="XetDuyetHoSo" asp-action="Index">Xem hồ sơ <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="dashboard-panel-body">
+                    <div class="status-summary">
+                        <div class="status-total"><span>Tổng hồ sơ</span><strong>@Model.TongHoSo</strong><small>hồ sơ đăng ký</small></div>
+                        <div class="status-bars">
+                            <div class="status-row">
+                                <div><span>Chờ duyệt</span><strong>@Model.SoHoSoChoDuyet</strong></div>
+                                <div class="progress" role="progressbar" aria-label="Hồ sơ chờ duyệt" aria-valuenow="@TyLeHoSo(Model.SoHoSoChoDuyet)" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar bar-amber" style="width: @TyLeHoSo(Model.SoHoSoChoDuyet)%"></div></div>
+                                <small>@TyLeHoSo(Model.SoHoSoChoDuyet)%</small>
+                            </div>
+                            <div class="status-row">
+                                <div><span>Đủ điều kiện</span><strong>@Model.SoHoSoDuDieuKien</strong></div>
+                                <div class="progress" role="progressbar" aria-label="Hồ sơ đủ điều kiện" aria-valuenow="@TyLeHoSo(Model.SoHoSoDuDieuKien)" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar bar-teal" style="width: @TyLeHoSo(Model.SoHoSoDuDieuKien)%"></div></div>
+                                <small>@TyLeHoSo(Model.SoHoSoDuDieuKien)%</small>
+                            </div>
+                            <div class="status-row">
+                                <div><span>Không đủ điều kiện</span><strong>@Model.SoHoSoKhongDuDieuKien</strong></div>
+                                <div class="progress" role="progressbar" aria-label="Hồ sơ không đủ điều kiện" aria-valuenow="@TyLeHoSo(Model.SoHoSoKhongDuDieuKien)" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar bar-red" style="width: @TyLeHoSo(Model.SoHoSoKhongDuDieuKien)%"></div></div>
+                                <small>@TyLeHoSo(Model.SoHoSoKhongDuDieuKien)%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="col-xl-4">
+            <section class="dashboard-panel h-100">
+                <div class="dashboard-panel-header"><div><h2>Kết quả thi</h2><p>Tổng hợp kết quả đã nhập</p></div></div>
+                <div class="dashboard-panel-body result-summary">
+                    <div class="result-ring" style="--result-percent: @tyLeDat"><div><strong>@tyLeDat%</strong><span>Tỷ lệ đạt</span></div></div>
+                    <div class="result-legend">
+                        <div><span class="legend-dot success"></span><span>Đạt</span><strong>@Model.SoKetQuaDat</strong></div>
+                        <div><span class="legend-dot danger"></span><span>Không đạt</span><strong>@Model.SoKetQuaKhongDat</strong></div>
+                    </div>
+                    <a class="btn btn-outline-primary w-100" asp-controller="KetQuaThi" asp-action="Index">Xem toàn bộ kết quả</a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <section class="dashboard-panel mt-3">
+        <div class="dashboard-panel-header">
+            <div><h2>Lịch thi sắp diễn ra</h2><p>Năm lịch gần nhất đang chờ tổ chức</p></div>
+            <a asp-controller="LichThi" asp-action="Index">Quản lý lịch thi <i class="bi bi-arrow-right"></i></a>
+        </div>
+        @if (Model.LichThiSapToi.Count == 0)
+        {
+            <div class="empty-state py-4"><i class="bi bi-calendar2-check"></i><h2>Chưa có lịch thi sắp tới</h2><p class="mb-0">Các lịch thi mới sẽ xuất hiện tại đây.</p></div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-app align-middle mb-0">
+                    <thead><tr><th>Kỳ thi</th><th>Thí sinh</th><th>Thời gian</th><th>Địa điểm / Phòng</th><th></th></tr></thead>
+                    <tbody>
+                    @foreach (var lich in Model.LichThiSapToi)
+                    {
+                        <tr>
+                            <td><span class="fw-semibold">@lich.TenKyThi</span></td>
+                            <td>@lich.HoTenThiSinh</td>
+                            <td><span class="schedule-time"><i class="bi bi-clock"></i>@lich.ThoiGianBatDau.ToString("HH:mm · dd/MM/yyyy")</span></td>
+                            <td>@lich.DiaDiem</td>
+                            <td class="text-end"><a class="btn btn-sm btn-light" asp-controller="LichThi" asp-action="Details" asp-route-id="@lich.MaLichThi">Chi tiết</a></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+}
+else
+{
+    <section class="candidate-hero">
+        <div class="candidate-hero-content">
+            <span class="candidate-hero-kicker">NỀN TẢNG ĐĂNG KÝ THI TRỰC TUYẾN</span>
+            <h1>Chào mừng bạn đến với<br /><strong>Cổng chứng chỉ UNETI</strong></h1>
+            <p>Khám phá chứng chỉ phù hợp, đăng ký kỳ thi và theo dõi toàn bộ hành trình dự thi tại một nơi.</p>
+            <div class="candidate-hero-actions">
+                <a class="btn btn-primary btn-lg" asp-controller="ThiSinhPortal" asp-action="KyThiDangMo">Xem kỳ thi đang mở</a>
+                <a class="btn btn-outline-light btn-lg" asp-controller="ThiSinhPortal" asp-action="LichThiCuaToi">Lịch thi của tôi</a>
+            </div>
+        </div>
+        <div class="candidate-hero-art" aria-hidden="true"><i class="bi bi-mortarboard"></i><span class="hero-orbit one"></span><span class="hero-orbit two"></span></div>
+    </section>
+
+    <section class="candidate-home-section">
+        <div class="candidate-section-title"><div><span>ĐỊNH HƯỚNG NGHỀ NGHIỆP</span><h2>Khám phá theo ngành nghề</h2><p>Chọn lĩnh vực bạn quan tâm để tìm chứng chỉ phù hợp.</p></div><a asp-controller="ThiSinhPortal" asp-action="KhamPha">Xem tất cả <i class="bi bi-arrow-right"></i></a></div>
+        <div class="candidate-category-grid home-categories">
+            @foreach (var nganh in Model.NganhNghes)
+            {
+                <a class="candidate-category-card" asp-controller="ThiSinhPortal" asp-action="KhamPha" asp-route-maNganhNghe="@nganh.MaNganhNghe">
+                    <i class="bi @nganh.BieuTuong"></i><div><strong>@nganh.TenNganhNghe</strong><span>@nganh.SoChungChi chứng chỉ · @nganh.MoTa</span></div><i class="bi bi-arrow-up-right"></i>
+                </a>
+            }
+        </div>
+    </section>
+
+    <section class="candidate-home-section">
+        <div class="candidate-section-title"><div><span>CƠ HỘI ĐANG MỞ</span><h2>Kỳ thi sắp hết hạn đăng ký</h2><p>Hoàn thiện hồ sơ sớm để không bỏ lỡ kỳ thi phù hợp.</p></div><a asp-controller="ThiSinhPortal" asp-action="KyThiDangMo">Xem tất cả <i class="bi bi-arrow-right"></i></a></div>
+        @if (Model.KyThiDangMo.Count == 0)
+        {
+            <div class="candidate-empty compact"><i class="bi bi-calendar-x"></i><h2>Chưa có kỳ thi đang nhận hồ sơ</h2></div>
+        }
+        else
+        {
+            <div class="candidate-home-exams">
+                @foreach (var kyThi in Model.KyThiDangMo)
+                {
+                    <article><span class="candidate-category">@(kyThi.TenNganhNghe ?? "Chứng chỉ")</span><h3>@kyThi.TenKyThi</h3><p>@kyThi.TenChungChi · @kyThi.CapDoThi</p><div><strong>@kyThi.LePhiDuThi.ToString("N0") đ</strong><span>Hạn @kyThi.HanDangKy.ToString("dd/MM/yyyy")</span></div>@if (kyThi.DaDangKy) { <a class="btn btn-success disabled">Đã đăng ký</a> } else { <a class="btn btn-primary" asp-controller="HoSoThiSinh" asp-action="Create" asp-route-maKyThi="@kyThi.MaKyThi">Đăng ký dự thi</a> }</article>
+                }
+            </div>
+        }
+    </section>
+}

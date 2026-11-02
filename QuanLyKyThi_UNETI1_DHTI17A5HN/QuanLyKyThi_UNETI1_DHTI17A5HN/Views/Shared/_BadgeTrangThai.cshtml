@@ -1,0 +1,8 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Badge trạng thái dùng chung. Cách dùng:
+   <partial name="_BadgeTrangThai" model="item.TrangThai" />
+   ============================================================ *@
+@model Enum
+<span class="badge-status @Model.LopBadge()">@Model.HienThi()</span>

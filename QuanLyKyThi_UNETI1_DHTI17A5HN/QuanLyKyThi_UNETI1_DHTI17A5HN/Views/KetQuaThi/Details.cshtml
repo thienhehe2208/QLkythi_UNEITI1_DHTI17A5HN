@@ -1,0 +1,19 @@
+@* Phạm Quang Minh — 23103100201: Chi tiết kết quả dùng ViewModel, card và badge theo nhóm. *@
+@model KetQuaThiChiTietViewModel
+@{ ViewData["Title"] = "Chi tiết kết quả thi"; }
+<div class="page-header">
+    <div><nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a asp-action="Index">Kết quả thi</a></li><li class="breadcrumb-item active" aria-current="page">Chi tiết</li></ol></nav>
+    <div class="d-flex gap-2 align-items-center flex-wrap"><h1>Kết quả thi #@Model.MaKetQuaThi</h1><partial name="_BadgeTrangThai" model="Model.KetQua" /></div><p class="page-subtitle">@Model.HoTenThiSinh · @Model.TenKyThi</p></div>
+    @if (Model.CoTheSua) { <a asp-action="Edit" asp-route-id="@Model.MaKetQuaThi" class="btn btn-primary">Sửa kết quả</a> }
+</div>
+<div class="row g-3">
+    <div class="col-lg-8"><div class="card"><div class="card-header">Thông tin kết quả</div><div class="card-body py-1"><dl class="info-list">
+        <div class="row"><dt class="col-sm-4">Điểm đánh giá</dt><dd class="col-sm-8">@(Model.DiemDanhGia?.ToString("0.##") ?? "Không sử dụng điểm")</dd></div>
+        <div class="row"><dt class="col-sm-4">Kết quả xác nhận</dt><dd class="col-sm-8"><partial name="_BadgeTrangThai" model="Model.KetQua" /></dd></div>
+        <div class="row"><dt class="col-sm-4">Ngày cập nhật</dt><dd class="col-sm-8">@Model.NgayCapNhat.ToString("dd/MM/yyyy HH:mm") (UTC+7)</dd></div>
+        <div class="row"><dt class="col-sm-4">Nhận xét</dt><dd class="col-sm-8" style="white-space:pre-line">@(Model.NhanXet ?? "Chưa có nhận xét")</dd></div>
+    </dl></div></div></div>
+    <div class="col-lg-4"><div class="card"><div class="card-header">Hồ sơ dự thi</div><div class="card-body"><p class="fw-semibold mb-1">@Model.HoTenThiSinh</p><p class="text-muted small">@Model.TenKyThi · HS-@Model.MaHoSo</p><partial name="_BadgeTrangThai" model="Model.TrangThaiHoSo" /><p class="text-muted small mt-3 mb-0">Kết quả đã được cán bộ xác nhận và công bố cho thí sinh.</p></div></div></div>
+</div>
+<a asp-action="Index" class="btn btn-link px-0 mt-3">← Quay lại danh sách</a>
+

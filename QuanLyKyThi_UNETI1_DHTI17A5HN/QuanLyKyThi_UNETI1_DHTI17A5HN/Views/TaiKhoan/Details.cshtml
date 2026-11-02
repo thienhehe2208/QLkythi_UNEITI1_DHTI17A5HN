@@ -1,0 +1,81 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Chi tiết tài khoản (không hiển thị mật khẩu/hash) và các thao tác.
+   ============================================================ *@
+@model TaiKhoan
+@{
+    ViewData["Title"] = Model.HoTen;
+    var laChinhMinh = ViewBag.LaChinhMinh as bool? ?? false;
+    var dangHoatDong = Model.TrangThai == TrangThaiTaiKhoan.HoatDong;
+}
+
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Tài khoản</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@Model.TenDangNhap</li>
+            </ol>
+        </nav>
+        <h1>Chi tiết tài khoản</h1>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.MaTaiKhoan" class="btn btn-primary"><i class="bi bi-pencil"></i>Sửa</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-body text-center py-4">
+                <span class="avatar avatar-lg mb-3">@GiaoDienHelper.ChuCaiDau(Model.HoTen)</span>
+                <h2 class="h5 fw-bold mb-1">@Model.HoTen @if (laChinhMinh) { <span class="badge badge-soft align-middle">Bạn</span> }</h2>
+                <p class="text-muted mb-3">@Model.Email</p>
+                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                    <span class="badge badge-soft"><i class="bi @GiaoDienHelper.IconVaiTro(Model.VaiTro) me-1"></i>@Model.VaiTro.HienThi()</span>
+                    <partial name="_BadgeTrangThai" model="Model.TrangThai" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header">Thông tin tài khoản</div>
+            <div class="card-body py-1">
+                <dl class="info-list">
+                    <div class="row"><dt class="col-sm-4">@Html.DisplayNameFor(m => m.MaTaiKhoan)</dt><dd class="col-sm-8">#@Model.MaTaiKhoan</dd></div>
+                    <div class="row"><dt class="col-sm-4">@Html.DisplayNameFor(m => m.TenDangNhap)</dt><dd class="col-sm-8"><code class="text-body">@Model.TenDangNhap</code></dd></div>
+                    <div class="row"><dt class="col-sm-4">@Html.DisplayNameFor(m => m.HoTen)</dt><dd class="col-sm-8">@Model.HoTen</dd></div>
+                    <div class="row"><dt class="col-sm-4">@Html.DisplayNameFor(m => m.Email)</dt><dd class="col-sm-8">@Model.Email</dd></div>
+                    <div class="row"><dt class="col-sm-4">Hồ sơ thí sinh</dt>
+                        <dd class="col-sm-8">@(Model.ThiSinh is null ? "Chưa có" : $"Đã có (mã #{Model.ThiSinh.MaThiSinh})")</dd></div>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Bảo mật &amp; trạng thái</div>
+            <div class="card-body d-flex flex-wrap gap-2">
+                <a asp-action="DatLaiMatKhau" asp-route-id="@Model.MaTaiKhoan" class="btn btn-light"><i class="bi bi-key"></i>Đặt lại mật khẩu</a>
+                @if (!laChinhMinh)
+                {
+                    <form asp-action="KhoaMoKhoa" asp-route-id="@Model.MaTaiKhoan" method="post"
+                          data-confirm="@(dangHoatDong ? "Khóa tài khoản này? Người dùng sẽ bị đăng xuất ngay ở lần thao tác tiếp theo." : "Mở khóa tài khoản này?")"
+                          data-confirm-ok="@(dangHoatDong ? "Khóa" : "Mở khóa")"
+                          data-confirm-variant="@(dangHoatDong ? "btn-warning" : "btn-success")">
+                        <button type="submit" class="btn @(dangHoatDong ? "btn-outline-warning" : "btn-outline-success")">
+                            <i class="bi @(dangHoatDong ? "bi-lock" : "bi-unlock")"></i>@(dangHoatDong ? "Khóa tài khoản" : "Mở khóa")
+                        </button>
+                    </form>
+                    <a asp-action="Delete" asp-route-id="@Model.MaTaiKhoan" class="btn btn-outline-danger ms-auto"><i class="bi bi-trash"></i>Xóa tài khoản</a>
+                }
+                else
+                {
+                    <span class="text-muted small align-self-center">Bạn không thể tự khóa hoặc xóa tài khoản đang đăng nhập.</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Form đổi mật khẩu cho người dùng đang đăng nhập.
+   ============================================================ *@
+@model DoiMatKhauViewModel
+@{
+    ViewData["Title"] = "Đổi mật khẩu";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Đổi mật khẩu</h1>
+        <p class="page-subtitle">Mật khẩu mới tối thiểu 6 ký tự.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 col-xl-5">
+        <form asp-action="DoiMatKhau" method="post" class="card">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+                <div class="mb-3">
+                    <label asp-for="MatKhauHienTai" class="form-label required"></label>
+                    <div class="input-group">
+                        <input asp-for="MatKhauHienTai" class="form-control" autocomplete="current-password" />
+                        <button class="btn btn-outline-secondary" type="button" data-toggle-password="MatKhauHienTai" aria-label="Hiện mật khẩu"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span asp-validation-for="MatKhauHienTai" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="MatKhauMoi" class="form-label required"></label>
+                    <div class="input-group">
+                        <input asp-for="MatKhauMoi" class="form-control" autocomplete="new-password" />
+                        <button class="btn btn-outline-secondary" type="button" data-toggle-password="MatKhauMoi" aria-label="Hiện mật khẩu"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span asp-validation-for="MatKhauMoi" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="XacNhanMatKhau" class="form-label required"></label>
+                    <div class="input-group">
+                        <input asp-for="XacNhanMatKhau" class="form-control" autocomplete="new-password" />
+                        <button class="btn btn-outline-secondary" type="button" data-toggle-password="XacNhanMatKhau" aria-label="Hiện mật khẩu"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span asp-validation-for="XacNhanMatKhau" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-light">Hủy</a>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i>Lưu mật khẩu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

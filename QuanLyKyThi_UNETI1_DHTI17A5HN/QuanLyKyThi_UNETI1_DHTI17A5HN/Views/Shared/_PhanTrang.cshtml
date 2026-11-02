@@ -1,0 +1,58 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Partial phân trang dùng chung - trang đầu/trước/sau/cuối, số trang,
+   trang hiện tại; giữ nguyên từ khóa, bộ lọc, sắp xếp qua query string.
+   Cách dùng: <partial name="_PhanTrang" model="Model.PhanTrang" />
+   ============================================================ *@
+@model PhanTrangViewModel
+@{
+    const int soTrangHaiBen = 2;
+    var tu = Math.Max(1, Model.TrangHienTai - soTrangHaiBen);
+    var den = Math.Min(Model.TongSoTrang, Model.TrangHienTai + soTrangHaiBen);
+    var batDau = Model.TongSoBanGhi == 0 ? 0 : (Model.TrangHienTai - 1) * Model.KichThuocTrang + 1;
+    var ketThuc = Math.Min(Model.TrangHienTai * Model.KichThuocTrang, Model.TongSoBanGhi);
+
+    // Danh sách nút: (số trang đích, nhãn, có bấm được không, có phải trang hiện tại không, mô tả cho trình đọc màn hình)
+    var cacNut = new List<(int Trang, string Nhan, bool ChoPhep, bool HienTai, string MoTa)>
+    {
+        (1, "«", Model.CoTrangTruoc, false, "Trang đầu"),
+        (Model.TrangHienTai - 1, "‹", Model.CoTrangTruoc, false, "Trang trước")
+    };
+    for (var i = tu; i <= den; i++)
+        cacNut.Add((i, i.ToString(), true, i == Model.TrangHienTai, $"Trang {i}"));
+    cacNut.Add((Model.TrangHienTai + 1, "›", Model.CoTrangSau, false, "Trang sau"));
+    cacNut.Add((Model.TongSoTrang, "»", Model.CoTrangSau, false, "Trang cuối"));
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div class="text-muted small">
+        Hiển thị <strong>@batDau–@ketThuc</strong> trong <strong>@Model.TongSoBanGhi</strong> bản ghi
+    </div>
+
+    @if (Model.TongSoTrang > 1)
+    {
+        <nav aria-label="Phân trang">
+            <ul class="pagination pagination-sm mb-0">
+                @foreach (var nut in cacNut)
+                {
+                    if (nut.HienTai)
+                    {
+                        <li class="page-item active" aria-current="page"><span class="page-link">@nut.Nhan</span></li>
+                    }
+                    else if (!nut.ChoPhep)
+                    {
+                        <li class="page-item disabled"><span class="page-link" aria-label="@nut.MoTa">@nut.Nhan</span></li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="@Model.Action" asp-all-route-data="Model.RouteChoTrang(nut.Trang)"
+                               title="@nut.MoTa" aria-label="@nut.MoTa">@nut.Nhan</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </nav>
+    }
+</div>

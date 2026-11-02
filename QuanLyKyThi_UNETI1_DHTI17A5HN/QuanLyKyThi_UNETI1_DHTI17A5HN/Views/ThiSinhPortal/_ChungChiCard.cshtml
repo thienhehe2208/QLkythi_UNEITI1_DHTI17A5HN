@@ -1,0 +1,30 @@
+@model ChungChiTheViewModel
+@{
+    var returnUrl = ViewData["ReturnUrl"]?.ToString() ?? Context.Request.Path + Context.Request.QueryString;
+}
+<article class="candidate-certificate-card">
+    <div class="candidate-card-top">
+        <span class="candidate-category">@(Model.TenNganhNghe ?? "Chưa phân loại")</span>
+        <form asp-controller="ThiSinhPortal" asp-action="ChuyenYeuThich" method="post">
+            <input type="hidden" name="maChungChi" value="@Model.MaChungChi" />
+            <input type="hidden" name="returnUrl" value="@returnUrl" />
+            <button class="favorite-button @(Model.DaYeuThich ? "active" : "")" type="submit" title="@(Model.DaYeuThich ? "Bỏ yêu thích" : "Thêm vào yêu thích")">
+                <i class="bi @(Model.DaYeuThich ? "bi-heart-fill" : "bi-heart")"></i>
+            </button>
+        </form>
+    </div>
+    <div class="candidate-certificate-icon"><i class="bi bi-patch-check"></i></div>
+    <h2>@Model.TenChungChi</h2>
+    <p>@(Model.MoTa ?? "Thông tin chứng chỉ đang được cập nhật.")</p>
+    <div class="candidate-card-meta">
+        <span><i class="bi bi-calendar-check"></i>@Model.SoKyThiDangMo kỳ đang mở</span>
+        <strong>@(Model.LePhiThapNhat.HasValue ? $"Từ {Model.LePhiThapNhat.Value:N0} đ" : "Chưa có kỳ thi")</strong>
+    </div>
+    <div class="candidate-card-actions">
+        <a class="btn btn-outline-primary" asp-controller="ChungChi" asp-action="Details" asp-route-id="@Model.MaChungChi">Chi tiết</a>
+        @if (Model.SoKyThiDangMo > 0)
+        {
+            <a class="btn btn-primary" asp-controller="ThiSinhPortal" asp-action="KyThiDangMo" asp-route-maChungChi="@Model.MaChungChi">Xem kỳ thi</a>
+        }
+    </div>
+</article>

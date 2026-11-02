@@ -1,0 +1,25 @@
+@* ============================================================
+   Họ và tên: Nguyễn Đắc Tiến
+   Mã sinh viên: 23103100232
+   Nội dung thực hiện: Hiển thị thông báo thành công/lỗi (TempData) dạng toast ở góc dưới bên phải.
+   ============================================================ *@
+<div class="toast-container position-fixed p-3">
+    @if (TempData["ThongBao"] is string thongBao)
+    {
+        <div class="toast align-items-center text-bg-success" role="status" aria-live="polite" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body"><i class="bi bi-check-circle-fill me-2"></i>@thongBao</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Đóng"></button>
+            </div>
+        </div>
+    }
+    @if (TempData["LoiThongBao"] is string loi)
+    {
+        <div class="toast align-items-center text-bg-danger" role="alert" data-bs-autohide="false" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body"><i class="bi bi-exclamation-triangle-fill me-2"></i>@loi</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Đóng"></button>
+            </div>
+        </div>
+    }
+</div>
