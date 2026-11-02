@@ -14,6 +14,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.ViewModels
     {
         public int MaChungChi { get; set; }
         public string TenChungChi { get; set; } = string.Empty;
+        public string? TenNganhNghe { get; set; }
         public string? EmailLienHe { get; set; }
         public TrangThaiChungChi TrangThai { get; set; }
         public int SoKyThi { get; set; }
@@ -41,6 +42,9 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.ViewModels
     public class ChungChiFormViewModel
     {
         public int MaChungChi { get; set; }
+
+        [Display(Name = "Ngành nghề")]
+        public int? MaNganhNghe { get; set; }
 
         [Required(ErrorMessage = "Tên chứng chỉ không được để trống")]
         [StringLength(150, ErrorMessage = "Tên chứng chỉ tối đa 150 ký tự")]
@@ -75,6 +79,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.ViewModels
     {
         public int MaChungChi { get; set; }
         public string TenChungChi { get; set; } = string.Empty;
+        public string? TenNganhNghe { get; set; }
         public string? MoTa { get; set; }
         public string? EmailLienHe { get; set; }
         public TrangThaiChungChi TrangThai { get; set; }

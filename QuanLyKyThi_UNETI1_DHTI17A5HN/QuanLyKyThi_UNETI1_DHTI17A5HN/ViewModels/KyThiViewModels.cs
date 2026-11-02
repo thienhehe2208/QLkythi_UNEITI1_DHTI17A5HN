@@ -18,6 +18,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.ViewModels
         public string CapDoThi { get; set; } = string.Empty;
         public int SoChoThiToiDa { get; set; }
         public decimal DiemDauVaoToiThieu { get; set; }
+        public decimal LePhiDuThi { get; set; }
         public DateTime NgayBatDauDangKy { get; set; }
         public DateTime HanDangKy { get; set; }
         public TrangThaiKyThi TrangThai { get; set; }
@@ -80,6 +81,10 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.ViewModels
         [Range(typeof(decimal), "0", "999.99", ErrorMessage = "Điểm đầu vào tối thiểu phải từ 0 đến 999,99")]
         [Display(Name = "Điểm đầu vào tối thiểu")]
         public decimal DiemDauVaoToiThieu { get; set; }
+
+        [Range(typeof(decimal), "0", "999999999", ErrorMessage = "Lệ phí dự thi phải lớn hơn hoặc bằng 0")]
+        [Display(Name = "Lệ phí dự thi")]
+        public decimal LePhiDuThi { get; set; }
 
         [DataType(DataType.DateTime)]
         [Display(Name = "Ngày bắt đầu đăng ký")]

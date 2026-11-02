@@ -74,5 +74,6 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Models
         // Navigation
         public TaiKhoan? TaiKhoan { get; set; }
         public ICollection<HoSoDangKyThi> HoSoDangKyThis { get; set; } = new List<HoSoDangKyThi>();
+        public ICollection<ChungChiYeuThich> ChungChiYeuThichs { get; set; } = new List<ChungChiYeuThich>();
     }
 }

@@ -7,13 +7,18 @@
 
 <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
 <div class="row g-3">
-    <div class="col-md-7">
+    <div class="col-md-6">
         <label asp-for="TenChungChi" class="form-label required"></label>
         <input asp-for="TenChungChi" class="form-control" placeholder="vd. Tiếng Anh VSTEP (B1-C1)" />
         <div class="form-text">Không được trùng với chứng chỉ khác (không phân biệt hoa/thường).</div>
         <span asp-validation-for="TenChungChi" class="text-danger"></span>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-6">
+        <label asp-for="MaNganhNghe" class="form-label"></label>
+        <select asp-for="MaNganhNghe" asp-items="ViewBag.DanhSachNganhNghe" class="form-select"><option value="">-- Chưa phân loại --</option></select>
+        <span asp-validation-for="MaNganhNghe" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
         <label asp-for="EmailLienHe" class="form-label"></label>
         <input asp-for="EmailLienHe" class="form-control" type="email" placeholder="Không bắt buộc" />
         <span asp-validation-for="EmailLienHe" class="text-danger"></span>

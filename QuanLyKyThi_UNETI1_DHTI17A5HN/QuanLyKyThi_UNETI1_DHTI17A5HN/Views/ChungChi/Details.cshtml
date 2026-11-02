@@ -46,6 +46,7 @@
             <div class="card-body py-1">
                 <dl class="info-list">
                     <div class="row"><dt class="col-sm-4">Mã chứng chỉ</dt><dd class="col-sm-8">#@Model.MaChungChi</dd></div>
+                    <div class="row"><dt class="col-sm-4">Ngành nghề</dt><dd class="col-sm-8">@(Model.TenNganhNghe ?? "Chưa phân loại")</dd></div>
                     <div class="row"><dt class="col-sm-4">Email liên hệ</dt>
                         <dd class="col-sm-8">
                             @if (Model.EmailLienHe is null) { <span class="text-muted">Chưa cập nhật</span> }

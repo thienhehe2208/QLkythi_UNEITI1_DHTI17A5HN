@@ -42,6 +42,11 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Models
         [Display(Name = "Điểm đầu vào tối thiểu")]
         public decimal DiemDauVaoToiThieu { get; set; }
 
+        [Range(typeof(decimal), "0", "999999999", ErrorMessage = "Lệ phí dự thi phải lớn hơn hoặc bằng 0")]
+        [Column(TypeName = "decimal(18,2)")]
+        [Display(Name = "Lệ phí dự thi")]
+        public decimal LePhiDuThi { get; set; }
+
         [DataType(DataType.DateTime)]
         [Display(Name = "Ngày bắt đầu đăng ký")]
         public DateTime NgayBatDauDangKy { get; set; }

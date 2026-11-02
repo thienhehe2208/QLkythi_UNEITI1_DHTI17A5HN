@@ -88,6 +88,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
                     CapDoThi = k.CapDoThi,
                     SoChoThiToiDa = k.SoChoThiToiDa,
                     DiemDauVaoToiThieu = k.DiemDauVaoToiThieu,
+                    LePhiDuThi = k.LePhiDuThi,
                     NgayBatDauDangKy = k.NgayBatDauDangKy,
                     HanDangKy = k.HanDangKy,
                     TrangThai = k.TrangThai,
@@ -177,6 +178,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
                 SoChoThiToiDa = model.SoChoThiToiDa,
                 CapDoThi = model.CapDoThi,
                 DiemDauVaoToiThieu = model.DiemDauVaoToiThieu,
+                LePhiDuThi = model.LePhiDuThi,
                 NgayBatDauDangKy = model.NgayBatDauDangKy,
                 HanDangKy = model.HanDangKy,
                 MoTaKyThi = model.MoTaKyThi,
@@ -229,6 +231,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             kyThi.SoChoThiToiDa = model.SoChoThiToiDa;
             kyThi.CapDoThi = model.CapDoThi;
             kyThi.DiemDauVaoToiThieu = model.DiemDauVaoToiThieu;
+            kyThi.LePhiDuThi = model.LePhiDuThi;
             kyThi.NgayBatDauDangKy = model.NgayBatDauDangKy;
             kyThi.HanDangKy = model.HanDangKy;
             kyThi.MoTaKyThi = model.MoTaKyThi;
@@ -364,6 +367,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             SoChoThiToiDa = k.SoChoThiToiDa,
             CapDoThi = k.CapDoThi,
             DiemDauVaoToiThieu = k.DiemDauVaoToiThieu,
+            LePhiDuThi = k.LePhiDuThi,
             NgayBatDauDangKy = k.NgayBatDauDangKy,
             HanDangKy = k.HanDangKy,
             MoTaKyThi = k.MoTaKyThi,

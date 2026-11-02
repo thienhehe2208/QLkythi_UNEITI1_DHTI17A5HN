@@ -38,10 +38,27 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Data
                 await context.Database.MigrateAsync();
 
             await NapTaiKhoanAsync(context, matKhauService);
+            await NapNganhNgheAsync(context);
             await NapChungChiAsync(context);
             await NapKyThiAsync(context);
             await NapThiSinhVaHoSoAsync(context, matKhauService);
+            await NapChungChiYeuThichAsync(context);
             await NapLichThiVaKetQuaAsync(context);
+        }
+
+        private static async Task NapNganhNgheAsync(ApplicationDbContext context)
+        {
+            var mau = new[]
+            {
+                new NganhNghe { TenNganhNghe = "Công nghệ thông tin", MoTa = "Tin học, phần mềm và kỹ năng sử dụng công nghệ.", BieuTuong = "bi-laptop" },
+                new NganhNghe { TenNganhNghe = "Ngoại ngữ", MoTa = "Các chứng chỉ đánh giá năng lực ngoại ngữ.", BieuTuong = "bi-translate" },
+                new NganhNghe { TenNganhNghe = "Kỹ năng nghề nghiệp", MoTa = "Kỹ năng chuyên môn phục vụ học tập và việc làm.", BieuTuong = "bi-briefcase" },
+                new NganhNghe { TenNganhNghe = "Quản trị và kinh doanh", MoTa = "Kiến thức quản trị, kinh doanh và vận hành.", BieuTuong = "bi-graph-up-arrow" }
+            };
+
+            var daCo = await context.NganhNghes.Select(n => n.TenNganhNghe.ToLower()).ToListAsync();
+            context.NganhNghes.AddRange(mau.Where(n => !daCo.Contains(n.TenNganhNghe.ToLower())));
+            await context.SaveChangesAsync();
         }
 
         private static async Task NapTaiKhoanAsync(ApplicationDbContext context, IMatKhauService matKhauService)
@@ -104,6 +121,18 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Data
             var daCo = await context.ChungChis.Select(c => c.TenChungChi.ToLower()).ToListAsync();
             context.ChungChis.AddRange(mau.Where(c => !daCo.Contains(c.TenChungChi.ToLower())));
             await context.SaveChangesAsync();
+
+            var nganh = await context.NganhNghes.ToDictionaryAsync(n => n.TenNganhNghe, n => n.MaNganhNghe);
+            var chungChis = await context.ChungChis.ToListAsync();
+            foreach (var chungChi in chungChis)
+            {
+                chungChi.MaNganhNghe = chungChi.TenChungChi.Contains("VSTEP") || chungChi.TenChungChi.Contains("TOEIC")
+                    ? nganh["Ngoại ngữ"]
+                    : chungChi.TenChungChi.Contains("lập trình", StringComparison.OrdinalIgnoreCase)
+                        ? nganh["Kỹ năng nghề nghiệp"]
+                        : nganh["Công nghệ thông tin"];
+            }
+            await context.SaveChangesAsync();
         }
 
         // Module 2 - Nguyễn Tiến Quang. Mã sinh viên cần bổ sung theo bảng phân công.
@@ -137,6 +166,42 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Data
 
             var daCo = await context.KyThis.Select(k => k.TenKyThi.ToLower()).ToListAsync();
             context.KyThis.AddRange(mau.Where(k => !daCo.Contains(k.TenKyThi.ToLower())));
+            await context.SaveChangesAsync();
+
+            // Đồng bộ lệ phí cho cả dữ liệu đã có từ những lần chạy trước.
+            var kyThis = await context.KyThis.ToListAsync();
+            foreach (var kyThi in kyThis)
+            {
+                kyThi.LePhiDuThi = kyThi.TenKyThi.Contains("VSTEP") ? 1_800_000m
+                    : kyThi.TenKyThi.Contains("TOEIC") ? 1_500_000m
+                    : kyThi.TenKyThi.Contains("MOS") ? 1_200_000m
+                    : kyThi.TenKyThi.Contains("Lập trình") ? 900_000m
+                    : 600_000m;
+            }
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task NapChungChiYeuThichAsync(ApplicationDbContext context)
+        {
+            var thiSinhs = await context.ThiSinhs.OrderBy(t => t.MaThiSinh).Take(8).ToListAsync();
+            var chungChis = await context.ChungChis
+                .Where(c => c.TrangThai == TrangThaiChungChi.DangHoatDong)
+                .OrderBy(c => c.MaChungChi).ToListAsync();
+            var daCo = await context.ChungChiYeuThichs
+                .Select(y => new { y.MaThiSinh, y.MaChungChi }).ToListAsync();
+            var khoaDaCo = daCo.Select(x => (x.MaThiSinh, x.MaChungChi)).ToHashSet();
+
+            for (var i = 0; i < thiSinhs.Count && chungChis.Count > 0; i++)
+            {
+                var chungChi = chungChis[i % chungChis.Count];
+                if (!khoaDaCo.Add((thiSinhs[i].MaThiSinh, chungChi.MaChungChi))) continue;
+                context.ChungChiYeuThichs.Add(new ChungChiYeuThich
+                {
+                    MaThiSinh = thiSinhs[i].MaThiSinh,
+                    MaChungChi = chungChi.MaChungChi,
+                    NgayThem = DateTime.Today.AddDays(-i)
+                });
+            }
             await context.SaveChangesAsync();
         }
 

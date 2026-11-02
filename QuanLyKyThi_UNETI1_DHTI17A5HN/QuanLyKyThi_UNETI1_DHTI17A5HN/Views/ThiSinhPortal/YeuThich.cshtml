@@ -1,0 +1,14 @@
+@model List<ChungChiTheViewModel>
+@{
+    ViewData["Title"] = "Chứng chỉ yêu thích";
+    ViewData["ReturnUrl"] = Context.Request.Path;
+}
+<div class="candidate-page-heading"><div><span>BỘ SƯU TẬP CỦA BẠN</span><h1>Chứng chỉ yêu thích</h1><p>Lưu lại những chứng chỉ bạn quan tâm để theo dõi các kỳ thi mới.</p></div></div>
+@if (Model.Count == 0)
+{
+    <div class="candidate-empty"><i class="bi bi-heart"></i><h2>Chưa có chứng chỉ yêu thích</h2><p>Khám phá và nhấn biểu tượng trái tim để lưu chứng chỉ.</p><a class="btn btn-primary" asp-action="KhamPha">Khám phá chứng chỉ</a></div>
+}
+else
+{
+    <div class="candidate-certificate-grid">@foreach (var chungChi in Model) { <partial name="_ChungChiCard" model="chungChi" view-data="ViewData" /> }</div>
+}

@@ -23,6 +23,7 @@
             <div class="row"><dt class="col-sm-4">Chứng chỉ</dt><dd class="col-sm-8">@Model.ChungChi?.TenChungChi</dd></div>
             <div class="row"><dt class="col-sm-4">Cấp độ</dt><dd class="col-sm-8">@Model.CapDoThi</dd></div>
             <div class="row"><dt class="col-sm-4">Điểm đầu vào tối thiểu</dt><dd class="col-sm-8">@Model.DiemDauVaoToiThieu</dd></div>
+            <div class="row"><dt class="col-sm-4">Lệ phí dự thi</dt><dd class="col-sm-8 fw-semibold text-primary">@Model.LePhiDuThi.ToString("N0") đ</dd></div>
             <div class="row"><dt class="col-sm-4">Thời gian nhận hồ sơ</dt><dd class="col-sm-8">@Model.NgayBatDauDangKy.ToString("dd/MM/yyyy HH:mm") – @Model.HanDangKy.ToString("dd/MM/yyyy HH:mm")</dd></div>
             <div class="row"><dt class="col-sm-4">Tình trạng tiếp nhận</dt><dd class="col-sm-8"><strong class="@(dangNhan ? "text-success" : "text-muted")">@(dangNhan ? "Đang nhận hồ sơ" : "Không nhận hồ sơ")</strong></dd></div>
             <div class="row"><dt class="col-sm-4">Mô tả</dt><dd class="col-sm-8" style="white-space:pre-line">@(Model.MoTaKyThi ?? "Chưa cập nhật")</dd></div>

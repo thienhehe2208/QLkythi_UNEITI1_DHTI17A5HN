@@ -1,146 +1,184 @@
+// ============================================================
+// Họ và tên: Chu Văn Trọng
+// Nội dung thực hiện: Module 3 - hồ sơ cá nhân, tra cứu thí sinh
+//   và cập nhật trạng thái thí sinh theo quyền Admin.
+// ============================================================
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKyThi_UNETI1_TI17A5HN.Data;
 using QuanLyKyThi_UNETI1_TI17A5HN.Filters;
-using QuanLyKyThi_UNETI1_TI17A5HN.Models;
 using QuanLyKyThi_UNETI1_TI17A5HN.Models.Enums;
 using QuanLyKyThi_UNETI1_TI17A5HN.Services;
+using QuanLyKyThi_UNETI1_TI17A5HN.Services.Module3;
 using QuanLyKyThi_UNETI1_TI17A5HN.ViewModels;
+using QuanLyKyThi_UNETI1_TI17A5HN.ViewModels.Module3;
 
-namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
+namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers;
+
+[PhanQuyen]
+public class ThiSinhController(
+    ApplicationDbContext context,
+    Module3Service service,
+    ILogger<ThiSinhController> logger) : Controller
 {
-    [PhanQuyen]
-    public class ThiSinhController : Controller
+    private int MaTaiKhoan => HttpContext.Session.LayMaTaiKhoan()!.Value;
+
+    [HttpGet, PhanQuyen(VaiTro.ThiSinh)]
+    public async Task<IActionResult> HoSoCaNhan()
+        => View(await service.DocHoSoCaNhanAsync(MaTaiKhoan));
+
+    // Hai action này giữ tương thích với liên kết cũ của project chính.
+    [HttpGet, PhanQuyen(VaiTro.ThiSinh)]
+    public IActionResult HoSoCuaToi() => RedirectToAction(nameof(HoSoCaNhan));
+
+    [HttpGet, PhanQuyen(VaiTro.ThiSinh)]
+    public IActionResult Edit() => RedirectToAction(nameof(CapNhatHoSo));
+
+    [HttpGet, PhanQuyen(VaiTro.ThiSinh)]
+    public async Task<IActionResult> CapNhatHoSo()
     {
-        private readonly ApplicationDbContext _context;
-        public ThiSinhController(ApplicationDbContext context) => _context = context;
-
-        private int MaTaiKhoan => HttpContext.Session.LayMaTaiKhoan()!.Value;
-        private bool LaThiSinh => HttpContext.Session.LaVaiTro(VaiTro.ThiSinh);
-
-        [PhanQuyen(VaiTro.Admin, VaiTro.CanBoKhaoThi)]
-        public async Task<IActionResult> Index(string? tuKhoa, TrangThaiThiSinh? trangThai, int? trang)
+        var caNhan = await service.DocHoSoCaNhanAsync(MaTaiKhoan);
+        if (caNhan.DaKhaiBao) return View(caNhan);
+        var taiKhoan = await context.TaiKhoans.AsNoTracking()
+            .Where(t => t.MaTaiKhoan == MaTaiKhoan)
+            .Select(t => new { t.HoTen, t.Email })
+            .SingleAsync();
+        return View(new HoSoCaNhanFormViewModel
         {
-            var query = _context.ThiSinhs.AsNoTracking().AsQueryable();
-            if (!string.IsNullOrWhiteSpace(tuKhoa))
-            {
-                var tk = tuKhoa.Trim();
-                query = query.Where(t => t.HoTen.Contains(tk) || t.Email.Contains(tk)
-                    || t.SoDienThoai.Contains(tk) || t.TaiKhoan!.TenDangNhap.Contains(tk));
-            }
-            if (trangThai.HasValue) query = query.Where(t => t.TrangThai == trangThai.Value);
+            HoTen = taiKhoan.HoTen,
+            Email = taiKhoan.Email,
+            SoLanThiTruocDay = 0
+        });
+    }
 
-            var tongSo = await query.CountAsync();
-            var trangHienTai = PhanTrangViewModel.ChuanHoaTrang(trang, tongSo);
-            var danhSach = await query.OrderBy(t => t.HoTen)
+    [HttpPost, ValidateAntiForgeryToken, PhanQuyen(VaiTro.ThiSinh)]
+    public async Task<IActionResult> CapNhatHoSo(HoSoCaNhanFormViewModel model)
+    {
+        foreach (var error in QuyTacHoSoModule3.KiemTraCaNhan(model, service.BayGio))
+        {
+            foreach (var field in error.MemberNames.DefaultIfEmpty(""))
+            {
+                if (!ModelState.TryGetValue(field, out var entry) || entry.Errors.Count == 0)
+                    ModelState.AddModelError(field, error.ErrorMessage!);
+            }
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                await service.LuuHoSoCaNhanAsync(MaTaiKhoan, model);
+                TempData["ThongBao"] = "Đã lưu hồ sơ cá nhân.";
+                return RedirectToAction(nameof(HoSoCaNhan));
+            }
+            catch (NghiepVuModule3Exception error) { ModelState.AddModelError(error.Truong, error.Message); }
+            catch (Exception error) when (LoiDuLieuModule3.LaLoiDatabase(error))
+            {
+                logger.LogWarning(error, "Không lưu được hồ sơ cá nhân Module 3.");
+                ModelState.AddModelError("", "Không lưu được hồ sơ. Dữ liệu có thể vừa thay đổi; hãy tải lại và thử lại.");
+            }
+        }
+        return View(model);
+    }
+
+    [HttpGet, PhanQuyen(VaiTro.Admin, VaiTro.CanBoKhaoThi)]
+    public async Task<IActionResult> Index(string? tuKhoa, TrangThaiThiSinh? trangThai, int trang = 1)
+    {
+        var query = context.ThiSinhs.AsNoTracking();
+        if (!string.IsNullOrWhiteSpace(tuKhoa))
+        {
+            var key = tuKhoa.Trim();
+            query = query.Where(t => t.HoTen.Contains(key) || t.Email.Contains(key)
+                || t.SoDienThoai.Contains(key) || t.TaiKhoan!.TenDangNhap.Contains(key));
+        }
+        if (trangThai.HasValue) query = query.Where(t => t.TrangThai == trangThai);
+
+        var tongSo = await query.CountAsync();
+        var trangHienTai = PhanTrangViewModel.ChuanHoaTrang(trang, tongSo);
+        return View(new QuanLyThiSinhViewModel
+        {
+            TuKhoa = tuKhoa,
+            TrangThai = trangThai,
+            DanhSach = await query.OrderBy(t => t.HoTen).ThenBy(t => t.MaThiSinh)
                 .Skip((trangHienTai - 1) * PhanTrangViewModel.KichThuocMacDinh)
                 .Take(PhanTrangViewModel.KichThuocMacDinh)
-                .Select(t => new ThiSinhDongViewModel
+                .Select(t => new QuanLyKyThi_UNETI1_TI17A5HN.ViewModels.Module3.ThiSinhDongViewModel
                 {
                     MaThiSinh = t.MaThiSinh,
                     HoTen = t.HoTen,
                     TenDangNhap = t.TaiKhoan!.TenDangNhap,
                     Email = t.Email,
                     SoDienThoai = t.SoDienThoai,
-                    TrangThai = t.TrangThai,
-                    SoHoSo = t.HoSoDangKyThis.Count
-                }).ToListAsync();
-
-            return View(new ThiSinhIndexViewModel
+                    TrangThai = t.TrangThai
+                }).ToListAsync(),
+            PhanTrang = new()
             {
-                DanhSach = danhSach,
-                TuKhoa = tuKhoa,
-                TrangThai = trangThai,
-                PhanTrang = new PhanTrangViewModel
-                {
-                    TrangHienTai = trangHienTai,
-                    TongSoBanGhi = tongSo,
-                    ThamSo = new() { ["tuKhoa"] = tuKhoa, ["trangThai"] = trangThai?.ToString() }
-                }
-            });
-        }
-
-        public async Task<IActionResult> HoSoCuaToi()
-        {
-            if (!LaThiSinh) return RedirectToAction(nameof(Index));
-            var maThiSinh = await _context.ThiSinhs.Where(t => t.MaTaiKhoan == MaTaiKhoan)
-                .Select(t => (int?)t.MaThiSinh).FirstOrDefaultAsync();
-            return maThiSinh.HasValue
-                ? RedirectToAction(nameof(Details), new { id = maThiSinh.Value })
-                : RedirectToAction(nameof(Edit));
-        }
-
-        public async Task<IActionResult> Details(int id)
-        {
-            var thiSinh = await _context.ThiSinhs.AsNoTracking().Include(t => t.TaiKhoan)
-                .FirstOrDefaultAsync(t => t.MaThiSinh == id);
-            if (thiSinh is null) return NotFound();
-            if (LaThiSinh && thiSinh.MaTaiKhoan != MaTaiKhoan)
-                return RedirectToAction("TuChoiTruyCap", "Auth");
-            ViewBag.SoHoSo = await _context.HoSoDangKyThis.CountAsync(h => h.MaThiSinh == id);
-            ViewBag.CoTheSua = LaThiSinh;
-            return View(thiSinh);
-        }
-
-        [HttpGet]
-        [PhanQuyen(VaiTro.ThiSinh)]
-        public async Task<IActionResult> Edit()
-        {
-            var thiSinh = await _context.ThiSinhs.AsNoTracking()
-                .FirstOrDefaultAsync(t => t.MaTaiKhoan == MaTaiKhoan);
-
-            if (thiSinh is null)
-            {
-                var taiKhoan = await _context.TaiKhoans.AsNoTracking().FirstAsync(t => t.MaTaiKhoan == MaTaiKhoan);
-                return View(new ThiSinhFormViewModel
-                {
-                    HoTen = taiKhoan.HoTen, Email = taiKhoan.Email,
-                    NgaySinh = DateTime.Today.AddYears(-18), TrangThai = TrangThaiThiSinh.HoatDong
-                });
+                TrangHienTai = trangHienTai,
+                TongSoBanGhi = tongSo,
+                ThamSo = new() { ["tuKhoa"] = tuKhoa, ["trangThai"] = trangThai?.ToString() }
             }
+        });
+    }
 
-            return View(new ThiSinhFormViewModel
-            {
-                MaThiSinh = thiSinh.MaThiSinh, HoTen = thiSinh.HoTen, NgaySinh = thiSinh.NgaySinh,
-                GioiTinh = thiSinh.GioiTinh, SoDienThoai = thiSinh.SoDienThoai, Email = thiSinh.Email,
-                DiaChi = thiSinh.DiaChi, TrinhDoHienTai = thiSinh.TrinhDoHienTai,
-                NgheNghiep = thiSinh.NgheNghiep, SoLanThiTruocDay = thiSinh.SoLanThiTruocDay,
-                ChungChiDaCo = thiSinh.ChungChiDaCo, TrangThai = thiSinh.TrangThai
-            });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [PhanQuyen(VaiTro.ThiSinh)]
-        public async Task<IActionResult> Edit(ThiSinhFormViewModel model)
+    [HttpGet, PhanQuyen(VaiTro.Admin, VaiTro.CanBoKhaoThi)]
+    public async Task<IActionResult> Details(int id, int trang = 1)
+    {
+        var thiSinh = await context.ThiSinhs.AsNoTracking().SingleOrDefaultAsync(t => t.MaThiSinh == id);
+        if (thiSinh == null) return NotFound();
+        var query = context.HoSoDangKyThis.AsNoTracking().Where(h => h.MaThiSinh == id);
+        var tongSo = await query.CountAsync();
+        var trangHienTai = PhanTrangViewModel.ChuanHoaTrang(trang, tongSo);
+        return View(new ChiTietThiSinhViewModel
         {
-            var taiKhoan = await _context.TaiKhoans.FirstAsync(t => t.MaTaiKhoan == MaTaiKhoan);
-            var thiSinh = await _context.ThiSinhs.FirstOrDefaultAsync(t => t.MaTaiKhoan == MaTaiKhoan);
-            if (model.NgaySinh > DateTime.Today || model.NgaySinh < DateTime.Today.AddYears(-100))
-                ModelState.AddModelError(nameof(model.NgaySinh), "Ngày sinh không hợp lệ.");
-            if (!ModelState.IsValid) return View(model);
-
-            if (thiSinh is null)
+            CaNhan = QuyTacHoSoModule3.CaNhan(thiSinh, service.BayGio),
+            TenDangNhap = await context.TaiKhoans.Where(t => t.MaTaiKhoan == thiSinh.MaTaiKhoan)
+                .Select(t => t.TenDangNhap).SingleAsync(),
+            CoQuyenDoiTrangThai = HttpContext.Session.LaVaiTro(VaiTro.Admin),
+            HoSos = await query.OrderByDescending(h => h.NgayNop).ThenBy(h => h.MaHoSo)
+                .Skip((trangHienTai - 1) * PhanTrangViewModel.KichThuocMacDinh)
+                .Take(PhanTrangViewModel.KichThuocMacDinh)
+                .Select(h => new HoSoThiDongViewModel
+                {
+                    MaHoSo = h.MaHoSo,
+                    TenKyThi = h.KyThi!.TenKyThi,
+                    TenChungChi = h.KyThi.ChungChi!.TenChungChi,
+                    NgayNop = h.NgayNop,
+                    TrangThai = h.TrangThai
+                }).ToListAsync(),
+            PhanTrang = new()
             {
-                thiSinh = new ThiSinh { MaTaiKhoan = MaTaiKhoan };
-                _context.ThiSinhs.Add(thiSinh);
+                Action = "Details",
+                TrangHienTai = trangHienTai,
+                TongSoBanGhi = tongSo,
+                ThamSo = new() { ["id"] = id.ToString() }
             }
-            thiSinh.HoTen = model.HoTen.Trim();
-            thiSinh.NgaySinh = model.NgaySinh.Date;
-            thiSinh.GioiTinh = model.GioiTinh;
-            thiSinh.SoDienThoai = model.SoDienThoai.Trim();
-            thiSinh.Email = model.Email.Trim();
-            thiSinh.DiaChi = model.DiaChi?.Trim();
-            thiSinh.TrinhDoHienTai = model.TrinhDoHienTai?.Trim();
-            thiSinh.NgheNghiep = model.NgheNghiep?.Trim();
-            thiSinh.SoLanThiTruocDay = model.SoLanThiTruocDay;
-            thiSinh.ChungChiDaCo = model.ChungChiDaCo?.Trim();
-            taiKhoan.HoTen = thiSinh.HoTen;
-            taiKhoan.Email = thiSinh.Email;
+        });
+    }
 
-            await _context.SaveChangesAsync();
-            TempData["ThongBao"] = "Đã cập nhật thông tin thí sinh.";
-            return RedirectToAction(nameof(Details), new { id = thiSinh.MaThiSinh });
+    [HttpPost, ValidateAntiForgeryToken, PhanQuyen(VaiTro.Admin)]
+    public async Task<IActionResult> CapNhatTrangThai(int id, CapNhatTrangThaiThiSinhViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["LoiThongBao"] = "Vui lòng chọn trạng thái thí sinh hợp lệ.";
+            return RedirectToAction(nameof(Details), new { id });
         }
+        try
+        {
+            await service.CapNhatTrangThaiAsync(MaTaiKhoan, id, model.TrangThai!.Value);
+            TempData["ThongBao"] = "Đã cập nhật trạng thái thí sinh.";
+        }
+        catch (NghiepVuModule3Exception error)
+        {
+            if (error.MaLoi == "KHONG_TIM_THAY") return NotFound();
+            TempData["LoiThongBao"] = error.Message;
+        }
+        catch (Exception error) when (LoiDuLieuModule3.LaLoiDatabase(error))
+        {
+            logger.LogWarning(error, "Không đổi được trạng thái thí sinh Module 3.");
+            TempData["LoiThongBao"] = "Dữ liệu vừa thay đổi hoặc không lưu được. Hãy tải lại và thử lại.";
+        }
+        return RedirectToAction(nameof(Details), new { id });
     }
 }

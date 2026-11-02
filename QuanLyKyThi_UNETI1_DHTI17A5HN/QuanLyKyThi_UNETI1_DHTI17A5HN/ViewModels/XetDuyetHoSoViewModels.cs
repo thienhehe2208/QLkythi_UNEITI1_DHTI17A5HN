@@ -1,4 +1,12 @@
-﻿using QuanLyKyThi_UNETI1_TI17A5HN.Models.Enums;
+// ============================================================
+// Họ và tên: Lương Thế Thiện
+// Mã sinh viên: 21103101237
+// Nội dung thực hiện: ViewModel danh sách, bộ lọc, chi tiết và
+//   biểu mẫu xét duyệt hồ sơ đăng ký dự thi (Module 4).
+// ============================================================
+
+using Microsoft.AspNetCore.Mvc.Rendering;
+using QuanLyKyThi_UNETI1_TI17A5HN.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 namespace QuanLyKyThi_UNETI1_TI17A5HN.ViewModels
 {
@@ -26,6 +34,20 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.ViewModels
 
         // Trạng thái được chọn trong bộ lọc
         public TrangThaiHoSo? TrangThai { get; set; }
+
+        [Display(Name = "Chứng chỉ")]
+        public int? MaChungChi { get; set; }
+
+        [DataType(DataType.Date), Display(Name = "Từ ngày")]
+        public DateTime? TuNgay { get; set; }
+
+        [DataType(DataType.Date), Display(Name = "Đến ngày")]
+        public DateTime? DenNgay { get; set; }
+
+        [Display(Name = "Sắp xếp")]
+        public string? SapXep { get; set; }
+
+        public List<SelectListItem> ChungChis { get; set; } = new();
 
         // Thông tin trang hiện tại, tổng bản ghi và tổng số trang
         public PhanTrangViewModel PhanTrang { get; set; } = new();

@@ -17,6 +17,9 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Models
         [Display(Name = "Mã chứng chỉ")]
         public int MaChungChi { get; set; }
 
+        [Display(Name = "Ngành nghề")]
+        public int? MaNganhNghe { get; set; }
+
         [Required(ErrorMessage = "Tên chứng chỉ không được để trống")]
         [StringLength(150, ErrorMessage = "Tên chứng chỉ tối đa 150 ký tự")]
         [Display(Name = "Tên chứng chỉ")]
@@ -36,6 +39,8 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Models
         public TrangThaiChungChi TrangThai { get; set; } = TrangThaiChungChi.DangHoatDong;
 
         // Navigation: ChungChi (1) - (n) KyThi
+        public NganhNghe? NganhNghe { get; set; }
         public ICollection<KyThi> KyThis { get; set; } = new List<KyThi>();
+        public ICollection<ChungChiYeuThich> ChungChiYeuThichs { get; set; } = new List<ChungChiYeuThich>();
     }
 }

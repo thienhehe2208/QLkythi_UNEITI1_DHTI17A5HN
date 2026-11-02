@@ -8,6 +8,7 @@
 // ============================================================
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKyThi_UNETI1_TI17A5HN.Data;
 using QuanLyKyThi_UNETI1_TI17A5HN.Filters;
@@ -66,6 +67,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
                 {
                     MaChungChi = c.MaChungChi,
                     TenChungChi = c.TenChungChi,
+                    TenNganhNghe = c.NganhNghe != null ? c.NganhNghe.TenNganhNghe : null,
                     EmailLienHe = c.EmailLienHe,
                     TrangThai = c.TrangThai,
                     SoKyThi = c.KyThis.Count()
@@ -103,6 +105,7 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
                 {
                     MaChungChi = c.MaChungChi,
                     TenChungChi = c.TenChungChi,
+                    TenNganhNghe = c.NganhNghe != null ? c.NganhNghe.TenNganhNghe : null,
                     MoTa = c.MoTa,
                     EmailLienHe = c.EmailLienHe,
                     TrangThai = c.TrangThai,
@@ -132,7 +135,11 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
 
         // GET: /ChungChi/Create
         [PhanQuyen(VaiTro.Admin)]
-        public IActionResult Create() => View(new ChungChiFormViewModel());
+        public async Task<IActionResult> Create()
+        {
+            await NapDanhSachNganhNgheAsync();
+            return View(new ChungChiFormViewModel());
+        }
 
         // POST: /ChungChi/Create
         [HttpPost]
@@ -144,11 +151,15 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             await KiemTraTrungTenAsync(model);
 
             if (!ModelState.IsValid)
+            {
+                await NapDanhSachNganhNgheAsync(model.MaNganhNghe);
                 return View(model);
+            }
 
             var chungChi = new ChungChi
             {
                 TenChungChi = model.TenChungChi,
+                MaNganhNghe = model.MaNganhNghe,
                 MoTa = model.MoTa,
                 EmailLienHe = model.EmailLienHe,
                 TrangThai = TrangThaiChungChi.DangHoatDong // chứng chỉ mới luôn ở trạng thái hoạt động
@@ -156,7 +167,10 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             _context.ChungChis.Add(chungChi);
 
             if (!await LuuAnToanAsync(model))
+            {
+                await NapDanhSachNganhNgheAsync(model.MaNganhNghe);
                 return View(model);
+            }
 
             TempData["ThongBao"] = $"Đã thêm chứng chỉ \"{chungChi.TenChungChi}\".";
             return RedirectToAction(nameof(Index));
@@ -169,9 +183,12 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             var chungChi = await _context.ChungChis.AsNoTracking().FirstOrDefaultAsync(c => c.MaChungChi == id);
             if (chungChi is null) return NotFound();
 
+            await NapDanhSachNganhNgheAsync(chungChi.MaNganhNghe);
+
             return View(new ChungChiFormViewModel
             {
                 MaChungChi = chungChi.MaChungChi,
+                MaNganhNghe = chungChi.MaNganhNghe,
                 TenChungChi = chungChi.TenChungChi,
                 MoTa = chungChi.MoTa,
                 EmailLienHe = chungChi.EmailLienHe,
@@ -195,14 +212,21 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             await KiemTraTrungTenAsync(model);
 
             if (!ModelState.IsValid)
+            {
+                await NapDanhSachNganhNgheAsync(model.MaNganhNghe);
                 return View(model);
+            }
 
             chungChi.TenChungChi = model.TenChungChi;
+            chungChi.MaNganhNghe = model.MaNganhNghe;
             chungChi.MoTa = model.MoTa;
             chungChi.EmailLienHe = model.EmailLienHe;
 
             if (!await LuuAnToanAsync(model))
+            {
+                await NapDanhSachNganhNgheAsync(model.MaNganhNghe);
                 return View(model);
+            }
 
             TempData["ThongBao"] = $"Đã cập nhật chứng chỉ \"{chungChi.TenChungChi}\".";
             return RedirectToAction(nameof(Details), new { id });
@@ -323,6 +347,14 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
                 ModelState.AddModelError(nameof(model.TenChungChi), "Tên chứng chỉ đã tồn tại.");
                 return false;
             }
+        }
+
+        private async Task NapDanhSachNganhNgheAsync(int? giaTri = null)
+        {
+            var danhSach = await _context.NganhNghes.AsNoTracking()
+                .Where(n => n.DangHienThi || n.MaNganhNghe == giaTri)
+                .OrderBy(n => n.TenNganhNghe).ToListAsync();
+            ViewBag.DanhSachNganhNghe = new SelectList(danhSach, "MaNganhNghe", "TenNganhNghe", giaTri);
         }
     }
 }

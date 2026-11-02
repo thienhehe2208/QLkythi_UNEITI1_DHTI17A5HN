@@ -1,0 +1,39 @@
+@model KhamPhaChungChiViewModel
+@{
+    ViewData["Title"] = "Khám phá chứng chỉ";
+    ViewData["ReturnUrl"] = Context.Request.Path + Context.Request.QueryString;
+}
+
+<div class="candidate-page-heading">
+    <div><span>KHÁM PHÁ</span><h1>Chứng chỉ theo ngành nghề</h1><p>Tìm chứng chỉ phù hợp với mục tiêu học tập và công việc của bạn.</p></div>
+</div>
+
+<form asp-action="KhamPha" method="get" class="candidate-search-bar">
+    <div class="search-input flex-grow-1"><i class="bi bi-search"></i><input asp-for="TuKhoa" class="form-control" placeholder="Tìm tên hoặc nội dung chứng chỉ..." /></div>
+    @if (Model.MaNganhNghe.HasValue) { <input type="hidden" asp-for="MaNganhNghe" /> }
+    <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+</form>
+
+<div class="candidate-category-grid">
+    <a class="candidate-category-card @(!Model.MaNganhNghe.HasValue ? "active" : "")" asp-action="KhamPha" asp-route-tuKhoa="@Model.TuKhoa">
+        <i class="bi bi-grid"></i><div><strong>Tất cả ngành nghề</strong><span>Xem toàn bộ chứng chỉ</span></div>
+    </a>
+    @foreach (var nganh in Model.NganhNghes)
+    {
+        <a class="candidate-category-card @(Model.MaNganhNghe == nganh.MaNganhNghe ? "active" : "")" asp-action="KhamPha" asp-route-maNganhNghe="@nganh.MaNganhNghe" asp-route-tuKhoa="@Model.TuKhoa">
+            <i class="bi @nganh.BieuTuong"></i><div><strong>@nganh.TenNganhNghe</strong><span>@nganh.SoChungChi chứng chỉ</span></div>
+        </a>
+    }
+</div>
+
+<div class="candidate-section-title"><div><h2>Danh sách chứng chỉ</h2><p>@Model.ChungChis.Count kết quả phù hợp</p></div></div>
+@if (Model.ChungChis.Count == 0)
+{
+    <div class="candidate-empty"><i class="bi bi-search"></i><h2>Không tìm thấy chứng chỉ</h2><p>Hãy thử từ khóa hoặc ngành nghề khác.</p></div>
+}
+else
+{
+    <div class="candidate-certificate-grid">
+        @foreach (var chungChi in Model.ChungChis) { <partial name="_ChungChiCard" model="chungChi" view-data="ViewData" /> }
+    </div>
+}

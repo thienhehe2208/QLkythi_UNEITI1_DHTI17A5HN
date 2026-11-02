@@ -1,4 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+// ============================================================
+// Họ và tên: Lương Thế Thiện
+// Mã sinh viên: 21103101237
+// Nội dung thực hiện: Tiếp nhận, tìm kiếm, lọc, sắp xếp, kiểm tra
+//   điều kiện, duyệt/từ chối và kiểm soát số chỗ thi (Module 4).
+// ============================================================
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKyThi_UNETI1_TI17A5HN.Data;
 using QuanLyKyThi_UNETI1_TI17A5HN.Filters;
@@ -21,14 +29,21 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
         public async Task<IActionResult> Index(
             string? tuKhoa,
             TrangThaiHoSo? trangThai,
+            int? maChungChi,
+            DateTime? tuNgay,
+            DateTime? denNgay,
+            string? sapXep,
             int? trang)
         {
-            // Nếu chưa chọn trạng thái thì mặc định xem hồ sơ chờ duyệt.
-            var trangThaiLoc = trangThai ?? TrangThaiHoSo.ChoDuyet;
-
             var query = _context.HoSoDangKyThis
                 .AsNoTracking()
-                .Where(h => h.TrangThai == trangThaiLoc);
+                .AsQueryable();
+
+            if (trangThai.HasValue)
+                query = query.Where(h => h.TrangThai == trangThai.Value);
+
+            if (maChungChi.HasValue)
+                query = query.Where(h => h.KyThi!.MaChungChi == maChungChi.Value);
 
             // Tìm theo tên thí sinh, kỳ thi hoặc chứng chỉ.
             if (!string.IsNullOrWhiteSpace(tuKhoa))
@@ -41,6 +56,29 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
                     h.KyThi.ChungChi!.TenChungChi.Contains(tuKhoaChuanHoa));
             }
 
+            if (tuNgay.HasValue && denNgay.HasValue && tuNgay.Value.Date > denNgay.Value.Date)
+            {
+                ModelState.AddModelError(string.Empty, "Từ ngày không được sau Đến ngày.");
+            }
+            else
+            {
+                if (tuNgay.HasValue)
+                    query = query.Where(h => h.NgayNop >= tuNgay.Value.Date);
+                if (denNgay.HasValue)
+                {
+                    var ngaySauDenNgay = denNgay.Value.Date.AddDays(1);
+                    query = query.Where(h => h.NgayNop < ngaySauDenNgay);
+                }
+            }
+
+            query = sapXep switch
+            {
+                "ngay_asc" => query.OrderBy(h => h.NgayNop).ThenBy(h => h.MaHoSo),
+                "ten_asc" => query.OrderBy(h => h.ThiSinh!.HoTen).ThenByDescending(h => h.NgayNop),
+                "ten_desc" => query.OrderByDescending(h => h.ThiSinh!.HoTen).ThenByDescending(h => h.NgayNop),
+                _ => query.OrderByDescending(h => h.NgayNop).ThenByDescending(h => h.MaHoSo)
+            };
+
             // Đếm trước khi thực hiện Skip và Take.
             var tongSoBanGhi = await query.CountAsync();
 
@@ -49,7 +87,6 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
                 tongSoBanGhi);
 
             var danhSach = await query
-                .OrderBy(h => h.NgayNop)
                 .Skip((trangHienTai - 1) *
                       PhanTrangViewModel.KichThuocMacDinh)
                 .Take(PhanTrangViewModel.KichThuocMacDinh)
@@ -68,7 +105,19 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             {
                 DanhSach = danhSach,
                 TuKhoa = tuKhoa,
-                TrangThai = trangThaiLoc,
+                TrangThai = trangThai,
+                MaChungChi = maChungChi,
+                TuNgay = tuNgay,
+                DenNgay = denNgay,
+                SapXep = sapXep,
+                ChungChis = await _context.ChungChis.AsNoTracking()
+                    .OrderBy(c => c.TenChungChi)
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.MaChungChi.ToString(),
+                        Text = c.TenChungChi
+                    })
+                    .ToListAsync(),
 
                 PhanTrang = new PhanTrangViewModel
                 {
@@ -79,7 +128,11 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
                     ThamSo = new Dictionary<string, string?>
                     {
                         ["tuKhoa"] = tuKhoa,
-                        ["trangThai"] = trangThaiLoc.ToString()
+                        ["trangThai"] = trangThai?.ToString(),
+                        ["maChungChi"] = maChungChi?.ToString(),
+                        ["tuNgay"] = tuNgay?.ToString("yyyy-MM-dd"),
+                        ["denNgay"] = denNgay?.ToString("yyyy-MM-dd"),
+                        ["sapXep"] = sapXep
                     }
                 }
             };

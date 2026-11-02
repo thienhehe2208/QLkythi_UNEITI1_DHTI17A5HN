@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyKyThi_UNETI1_TI17A5HN.Controllers;
 using QuanLyKyThi_UNETI1_TI17A5HN.Data;
 using QuanLyKyThi_UNETI1_TI17A5HN.Services;
+using QuanLyKyThi_UNETI1_TI17A5HN.Services.Module3;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,9 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddScoped<IMatKhauService, MatKhauService>();
+
+// Module 3 - Chu Văn Trọng: hồ sơ cá nhân và đăng ký dự thi của thí sinh.
+builder.Services.AddScoped<Module3Service>();
 
 // Module 5 - Phạm Quang Minh (23103100201): thời gian nghiệp vụ và xử lý lịch/kết quả thi.
 builder.Services.AddSingleton(TimeProvider.System);

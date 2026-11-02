@@ -52,7 +52,7 @@
                 @foreach (var k in Model.DanhSach)
                 {
                     <tr>
-                        <td><a asp-action="Details" asp-route-id="@k.MaKyThi" class="title-link">@k.TenKyThi</a><div class="sub">@k.CapDoThi · Điểm yêu cầu @k.DiemDauVaoToiThieu</div></td>
+                        <td><a asp-action="Details" asp-route-id="@k.MaKyThi" class="title-link">@k.TenKyThi</a><div class="sub">@k.CapDoThi · @k.LePhiDuThi.ToString("N0") đ</div></td>
                         <td>@k.TenChungChi</td>
                         <td class="text-center">@if (Model.LaQuanLy) { <span>@k.SoHoSo/@k.SoChoThiToiDa</span> } else { <span>@k.SoChoThiToiDa</span> }</td>
                         <td>@k.HanDangKy.ToString("dd/MM/yyyy HH:mm")<div class="sub">@(k.DangNhanDangKy ? "Đang nhận hồ sơ" : "Không nhận hồ sơ")</div></td>

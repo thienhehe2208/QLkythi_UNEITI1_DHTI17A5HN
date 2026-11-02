@@ -10,7 +10,9 @@ using QuanLyKyThi_UNETI1_TI17A5HN.ViewModels;
 
 namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
 {
-    [PhanQuyen]
+    // Luồng thí sinh đã được chuyển sang HoSoThiSinhController (Module 3).
+    // Controller dùng chung cũ chỉ còn phục vụ tra cứu phía Admin/Cán bộ.
+    [PhanQuyen(VaiTro.Admin, VaiTro.CanBoKhaoThi)]
     public class HoSoDangKyController : Controller
     {
         private readonly ApplicationDbContext _context;

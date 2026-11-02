@@ -11,6 +11,34 @@
     "use strict";
 
     document.addEventListener("DOMContentLoaded", function () {
+        // Menu trái của giao diện Admin/Cán bộ: thu gọn trên máy tính,
+        // trượt ra/vào trên màn hình nhỏ.
+        var adminBody = document.querySelector(".admin-body");
+        if (adminBody) {
+            if (window.innerWidth >= 992 && localStorage.getItem("adminSidebarCollapsed") === "1") {
+                adminBody.classList.add("sidebar-collapsed");
+            }
+
+            document.querySelectorAll("[data-sidebar-toggle]").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    if (window.innerWidth < 992) {
+                        adminBody.classList.toggle("sidebar-open");
+                    } else {
+                        adminBody.classList.toggle("sidebar-collapsed");
+                        localStorage.setItem("adminSidebarCollapsed", adminBody.classList.contains("sidebar-collapsed") ? "1" : "0");
+                    }
+                });
+            });
+
+            document.querySelectorAll(".admin-sidebar .sidebar-link").forEach(function (link) {
+                link.addEventListener("click", function () { adminBody.classList.remove("sidebar-open"); });
+            });
+
+            window.addEventListener("resize", function () {
+                if (window.innerWidth >= 992) adminBody.classList.remove("sidebar-open");
+            });
+        }
+
         // Toast
         document.querySelectorAll(".toast").forEach(function (el) {
             bootstrap.Toast.getOrCreateInstance(el, { delay: 5000 }).show();

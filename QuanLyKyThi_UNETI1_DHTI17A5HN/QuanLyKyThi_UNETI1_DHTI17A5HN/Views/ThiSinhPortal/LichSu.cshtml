@@ -1,0 +1,25 @@
+@model List<LichSuDuThiItemViewModel>
+@{
+    ViewData["Title"] = "Lịch sử dự thi";
+}
+<div class="candidate-page-heading"><div><span>HÀNH TRÌNH CỦA BẠN</span><h1>Lịch sử đăng ký và dự thi</h1><p>Theo dõi toàn bộ hồ sơ, trạng thái xét duyệt và kết quả đã có.</p></div></div>
+@if (Model.Count == 0)
+{
+    <div class="candidate-empty"><i class="bi bi-clock-history"></i><h2>Chưa có lịch sử dự thi</h2><p>Hãy chọn một kỳ thi đang mở để bắt đầu.</p><a class="btn btn-primary" asp-action="KyThiDangMo">Xem kỳ thi đang mở</a></div>
+}
+else
+{
+    <div class="candidate-history-list">
+        @foreach (var item in Model)
+        {
+            <article class="candidate-history-item">
+                <div class="history-icon"><i class="bi bi-file-earmark-check"></i></div>
+                <div class="history-main"><span>@item.TenChungChi</span><h2>@item.TenKyThi</h2><small>Nộp hồ sơ lúc @item.NgayNop.ToString("HH:mm · dd/MM/yyyy")</small></div>
+                <div class="history-status"><partial name="_BadgeTrangThai" model="item.TrangThai" />
+                    @if (item.KetQua.HasValue) { <strong>@(item.DiemDanhGia?.ToString("0.##") ?? "—") điểm · @item.KetQua.Value.HienThi()</strong> }
+                </div>
+                <a class="btn btn-light" asp-controller="HoSoThiSinh" asp-action="Details" asp-route-id="@item.MaHoSo">Chi tiết</a>
+            </article>
+        }
+    </div>
+}

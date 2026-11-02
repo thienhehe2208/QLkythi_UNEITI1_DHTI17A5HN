@@ -24,6 +24,8 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Data
         public DbSet<HoSoDangKyThi> HoSoDangKyThis => Set<HoSoDangKyThi>();
         public DbSet<LichThi> LichThis => Set<LichThi>();
         public DbSet<KetQuaThi> KetQuaThis => Set<KetQuaThi>();
+        public DbSet<NganhNghe> NganhNghes => Set<NganhNghe>();
+        public DbSet<ChungChiYeuThich> ChungChiYeuThichs => Set<ChungChiYeuThich>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +44,28 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Data
             {
                 e.HasIndex(c => c.TenChungChi).IsUnique();
                 e.Property(c => c.TrangThai).HasConversion<string>().HasMaxLength(20);
+                e.HasOne(c => c.NganhNghe)
+                    .WithMany(n => n.ChungChis)
+                    .HasForeignKey(c => c.MaNganhNghe)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<NganhNghe>(e =>
+            {
+                e.HasIndex(n => n.TenNganhNghe).IsUnique();
+            });
+
+            modelBuilder.Entity<ChungChiYeuThich>(e =>
+            {
+                e.HasKey(y => new { y.MaThiSinh, y.MaChungChi });
+                e.HasOne(y => y.ThiSinh)
+                    .WithMany(t => t.ChungChiYeuThichs)
+                    .HasForeignKey(y => y.MaThiSinh)
+                    .OnDelete(DeleteBehavior.Cascade);
+                e.HasOne(y => y.ChungChi)
+                    .WithMany(c => c.ChungChiYeuThichs)
+                    .HasForeignKey(y => y.MaChungChi)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // ---------- KyThi: ChungChi (1) - (n) KyThi ----------
