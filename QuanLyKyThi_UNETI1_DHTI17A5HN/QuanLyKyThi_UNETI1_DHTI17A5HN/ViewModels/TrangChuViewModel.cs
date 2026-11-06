@@ -1,3 +1,4 @@
+// Phạm Quang Minh - 23103100201: bổ sung Dashboard đủ chỉ số mục 9.5.
 // ============================================================
 // Họ và tên: Nguyễn Đắc Tiến
 // Mã sinh viên: 23103100232
@@ -10,6 +11,9 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.ViewModels
     {
         public int SoChungChiHoatDong { get; set; }
         public int SoKyThi { get; set; }
+        public int TongChungChi { get; set; }
+        public int TongThiSinh { get; set; }
+        public int SoKyThiDangMo { get; set; }
 
         // Số liệu tổng quan dùng chung cho Admin và Cán bộ khảo thí.
         public int TongHoSo { get; set; }

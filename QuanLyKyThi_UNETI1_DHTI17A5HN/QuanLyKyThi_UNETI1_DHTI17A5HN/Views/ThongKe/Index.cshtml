@@ -1,0 +1,28 @@
+@* Phạm Quang Minh - 23103100201: Thống kê theo giao diện quản trị chung. *@
+@model ThongKeViewModel
+@{ ViewData["Title"] = "Thống kê"; var nhieuNhat = Model.KyThis.FirstOrDefault()?.TongHoSo ?? 0; }
+<div class="page-header"><div><h1>Thống kê kỳ thi và hồ sơ</h1><p class="page-subtitle">Số liệu toàn hệ thống; bộ lọc năm chỉ áp dụng cho bảng theo tháng.</p></div></div>
+<div class="row g-3 mb-3">
+    <div class="col-md-6"><section class="dashboard-panel h-100"><div class="dashboard-panel-header"><h2>Kỳ thi nhận nhiều hồ sơ nhất</h2></div><div class="dashboard-panel-body">
+    @if (nhieuNhat == 0) { <p class="text-muted mb-0">Chưa có hồ sơ đăng ký.</p> }
+    else { foreach (var k in Model.KyThis.Where(k => k.TongHoSo == nhieuNhat)) { <p><a asp-controller="KyThi" asp-action="Details" asp-route-id="@k.MaKyThi">@k.Ten</a> <strong>· @k.TongHoSo hồ sơ</strong></p> } }
+    </div></section></div>
+    <div class="col-md-6"><section class="dashboard-panel h-100"><div class="dashboard-panel-header"><h2>Tỷ lệ đạt trên số hồ sơ đã thi</h2></div><div class="dashboard-panel-body"><strong class="fs-2">@Model.TyLeDat.ToString("0.#")%</strong><p>@Model.SoDat đạt / @Model.SoDaThi đã thi (gồm cả hồ sơ đang chờ nhập kết quả).</p>@if (Model.SoDaThi == 0) { <p class="text-muted">Chưa có hồ sơ đã thi.</p> }</div></section></div>
+</div>
+<section class="dashboard-panel mb-3"><div class="dashboard-panel-header"><div><h2>Theo kỳ thi</h2><p>Qua kiểm tra = Đủ điều kiện + Chờ thi + Đã thi + Đạt + Không đạt. Tỷ lệ = Qua kiểm tra / (Qua kiểm tra + Không đủ điều kiện). Không tính hồ sơ chờ duyệt hoặc đã hủy.</p></div></div>
+<div class="table-responsive"><table class="table table-app align-middle mb-0"><thead><tr><th>Kỳ thi</th><th>Tổng hồ sơ</th><th>Đang đủ điều kiện</th><th>Qua kiểm tra</th><th>Không đủ điều kiện</th><th>Tỷ lệ qua kiểm tra</th></tr></thead><tbody>
+@foreach (var k in Model.KyThis) { <tr><td><a asp-controller="KyThi" asp-action="Details" asp-route-id="@k.MaKyThi">@k.Ten</a></td><td>@k.TongHoSo</td><td>@k.SoDuDieuKien</td><td>@k.SoQuaKiemTra</td><td>@k.SoKhongDuDieuKien</td><td>@k.TyLeQuaKiemTra.ToString("0.#")% @if (k.SoQuaKiemTra + k.SoKhongDuDieuKien == 0) { <small class="text-muted">(chưa xét duyệt)</small> }</td></tr> }
+@if (Model.KyThis.Count == 0) { <tr><td colspan="6" class="text-center text-muted">Chưa có kỳ thi.</td></tr> }
+</tbody></table></div></section>
+<div class="row g-3 mb-3"><div class="col-lg-6"><section class="dashboard-panel h-100"><div class="dashboard-panel-header"><h2>Theo chứng chỉ</h2></div><div class="table-responsive"><table class="table table-app mb-0"><thead><tr><th>Chứng chỉ</th><th>Số kỳ thi</th><th>Hồ sơ đạt</th></tr></thead><tbody>
+@foreach (var c in Model.ChungChis) { <tr><td>@c.Ten</td><td>@c.SoKyThi</td><td>@c.SoDat</td></tr> }
+@if (Model.ChungChis.Count == 0) { <tr><td colspan="3" class="text-center text-muted">Chưa có chứng chỉ.</td></tr> }
+</tbody></table></div></section></div>
+<div class="col-lg-6"><section class="dashboard-panel h-100"><div class="dashboard-panel-header"><h2>Hồ sơ theo trạng thái</h2></div><div class="table-responsive"><table class="table table-app mb-0"><thead><tr><th>Trạng thái</th><th>Số hồ sơ</th></tr></thead><tbody>
+@foreach (var t in Model.TrangThais) { <tr><td>@t.TrangThai.HienThi()</td><td>@t.SoLuong</td></tr> }
+</tbody></table></div></section></div></div>
+<section class="dashboard-panel"><div class="dashboard-panel-header"><div><h2>Hồ sơ và lịch thi theo tháng</h2><p>Hồ sơ theo ngày nộp; lịch theo ngày bắt đầu, bao gồm cả lịch đã hủy.</p></div></div><div class="dashboard-panel-body">
+<form method="get" class="d-flex flex-wrap align-items-end gap-2"><div><label for="nam" class="form-label">Năm thống kê</label><input id="nam" name="nam" type="number" min="1900" max="9998" value="@Model.Nam" class="form-control" required /></div><button class="btn btn-primary" type="submit">Xem thống kê</button></form><div asp-validation-summary="All" class="text-danger mt-2"></div>
+</div><div class="table-responsive"><table class="table table-app mb-0"><thead><tr><th>Tháng / @Model.Nam</th><th>Hồ sơ nộp</th><th>Lịch thi</th></tr></thead><tbody>
+@foreach (var t in Model.Thangs) { <tr><td>Tháng @t.Thang</td><td>@t.SoHoSo</td><td>@t.SoLichThi</td></tr> }
+</tbody><tfoot><tr><th>Tổng năm</th><th>@Model.Thangs.Sum(t => t.SoHoSo)</th><th>@Model.Thangs.Sum(t => t.SoLichThi)</th></tr></tfoot></table></div></section>
