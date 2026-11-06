@@ -1,3 +1,4 @@
+// Phạm Quang Minh - 23103100201: bổ sung Dashboard đủ chỉ số mục 9.5.
 // ============================================================
 // Họ và tên: Nguyễn Đắc Tiến
 // Mã sinh viên: 23103100232
@@ -24,28 +25,32 @@ namespace QuanLyKyThi_UNETI1_TI17A5HN.Controllers
             _context = context;
         }
 
+        [QuanLyKyThi_UNETI1_TI17A5HN.Filters.PhanQuyen]
         public async Task<IActionResult> Index()
         {
             // Khách chưa đăng nhập -> vào thẳng trang đăng nhập.
             if (!HttpContext.Session.DaDangNhap())
                 return RedirectToAction("DangNhap", "Auth");
 
-            var hienTai = DateTime.Now;
+            var hienTai = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(7)).DateTime;
             var model = new TrangChuViewModel
             {
                 SoChungChiHoatDong = await _context.ChungChis.CountAsync(c => c.TrangThai == TrangThaiChungChi.DangHoatDong),
                 SoKyThi = await _context.KyThis.CountAsync(),
+                TongChungChi = await _context.ChungChis.CountAsync(),
+                TongThiSinh = await _context.ThiSinhs.CountAsync(),
+                SoKyThiDangMo = await _context.KyThis.CountAsync(k => k.TrangThai == TrangThaiKyThi.DangMoDangKy),
                 TongHoSo = await _context.HoSoDangKyThis.CountAsync(),
                 SoHoSoChoDuyet = await _context.HoSoDangKyThis.CountAsync(h => h.TrangThai == TrangThaiHoSo.ChoDuyet),
                 SoHoSoDuDieuKien = await _context.HoSoDangKyThis.CountAsync(h => h.TrangThai == TrangThaiHoSo.DuDieuKien),
                 SoHoSoKhongDuDieuKien = await _context.HoSoDangKyThis.CountAsync(h => h.TrangThai == TrangThaiHoSo.KhongDuDieuKien),
                 SoLichThiSapToi = await _context.LichThis.CountAsync(l =>
-                    l.TrangThai == TrangThaiLichThi.DaLenLich && l.ThoiGianKetThuc >= hienTai),
+                    l.TrangThai == TrangThaiLichThi.DaLenLich && l.ThoiGianBatDau > hienTai),
                 SoKetQuaDat = await _context.KetQuaThis.CountAsync(k => k.KetQua == KetQuaCuoiCung.Dat),
                 SoKetQuaKhongDat = await _context.KetQuaThis.CountAsync(k => k.KetQua == KetQuaCuoiCung.KhongDat),
                 LichThiSapToi = await _context.LichThis
                     .AsNoTracking()
-                    .Where(l => l.TrangThai == TrangThaiLichThi.DaLenLich && l.ThoiGianKetThuc >= hienTai)
+                    .Where(l => l.TrangThai == TrangThaiLichThi.DaLenLich && l.ThoiGianBatDau > hienTai)
                     .OrderBy(l => l.ThoiGianBatDau)
                     .Select(l => new LichThiSapToiViewModel
                     {

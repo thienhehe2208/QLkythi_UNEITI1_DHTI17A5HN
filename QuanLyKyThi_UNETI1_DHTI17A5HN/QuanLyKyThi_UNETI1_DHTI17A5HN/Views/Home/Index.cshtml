@@ -31,7 +31,7 @@
     <div class="row g-3 dashboard-stats">
         <div class="col-sm-6 col-xl-3">
             <a class="dashboard-stat accent-blue" asp-controller="ChungChi" asp-action="Index">
-                <div><span class="dashboard-stat-label">Chứng chỉ hoạt động</span><strong>@Model.SoChungChiHoatDong</strong><small>Danh mục đang sử dụng</small></div>
+                <div><span class="dashboard-stat-label">Tổng số chứng chỉ</span><strong>@Model.TongChungChi</strong><small>Toàn bộ danh mục</small></div>
                 <span class="dashboard-stat-icon"><i class="bi bi-award"></i></span>
             </a>
         </div>
@@ -55,6 +55,13 @@
         </div>
     </div>
 
+    <div class="row g-3 dashboard-stats mt-1"><div class="col-sm-6 col-xl-3"><a class="dashboard-stat accent-blue" asp-controller="KyThi" asp-action="Index"><div><span class="dashboard-stat-label">Kỳ thi đang mở đăng ký</span><strong>@Model.SoKyThiDangMo</strong><small>Số liệu hiện tại</small></div><span class="dashboard-stat-icon"><i class="bi bi-calendar-plus"></i></span></a></div>
+<div class="col-sm-6 col-xl-3"><a class="dashboard-stat accent-blue" asp-controller="ThiSinh" asp-action="Index"><div><span class="dashboard-stat-label">Tổng số thí sinh</span><strong>@Model.TongThiSinh</strong><small>Số liệu hiện tại</small></div><span class="dashboard-stat-icon"><i class="bi bi-people"></i></span></a></div>
+<div class="col-sm-6 col-xl-3"><a class="dashboard-stat accent-blue" asp-controller="HoSoDangKy" asp-action="Index"><div><span class="dashboard-stat-label">Tổng số hồ sơ</span><strong>@Model.TongHoSo</strong><small>Số liệu hiện tại</small></div><span class="dashboard-stat-icon"><i class="bi bi-file-earmark-text"></i></span></a></div>
+<div class="col-sm-6 col-xl-3"><a class="dashboard-stat accent-blue" asp-controller="XetDuyetHoSo" asp-action="Index"><div><span class="dashboard-stat-label">Hồ sơ đủ điều kiện</span><strong>@Model.SoHoSoDuDieuKien</strong><small>Số liệu hiện tại</small></div><span class="dashboard-stat-icon"><i class="bi bi-clipboard-check"></i></span></a></div>
+<div class="col-sm-6 col-xl-3"><a class="dashboard-stat accent-blue" asp-controller="KetQuaThi" asp-action="Index"><div><span class="dashboard-stat-label">Hồ sơ đạt</span><strong>@Model.SoKetQuaDat</strong><small>Số liệu hiện tại</small></div><span class="dashboard-stat-icon"><i class="bi bi-award"></i></span></a></div>
+</div>
+    <div class="mt-3"><a asp-controller="ThongKe" asp-action="Index" class="btn btn-outline-primary"><i class="bi bi-bar-chart"></i> Xem thống kê chi tiết</a></div>
     <div class="row g-3 mt-1">
         <div class="col-xl-8">
             <section class="dashboard-panel h-100">
