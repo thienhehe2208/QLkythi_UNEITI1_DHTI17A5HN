@@ -3,6 +3,11 @@
    Mã sinh viên: 21103101237
    Nội dung: Trang tổng quan theo vai trò; dashboard quản trị dành
    cho Admin và Cán bộ khảo thí sử dụng số liệu thật từ hệ thống.
+
+   Họ và tên: Phạm Quang Minh
+   Mã sinh viên: 23103100201
+   Nội dung: Bổ sung các chỉ số Dashboard theo mục 9.5, liên kết
+   thống kê Module 5 và làm rõ tỷ lệ đạt trên hồ sơ đã có kết quả.
    ============================================================ *@
 @model TrangChuViewModel
 @{
@@ -95,9 +100,9 @@
         </div>
         <div class="col-xl-4">
             <section class="dashboard-panel h-100">
-                <div class="dashboard-panel-header"><div><h2>Kết quả thi</h2><p>Tổng hợp kết quả đã nhập</p></div></div>
+                <div class="dashboard-panel-header"><div><h2>Kết quả thi</h2><p>Tỷ lệ đạt trong số hồ sơ đã có kết quả</p></div></div>
                 <div class="dashboard-panel-body result-summary">
-                    <div class="result-ring" style="--result-percent: @tyLeDat"><div><strong>@tyLeDat%</strong><span>Tỷ lệ đạt</span></div></div>
+                    <div class="result-ring" style="--result-percent: @tyLeDat"><div><strong>@tyLeDat%</strong><span>Đã có kết quả</span></div></div>
                     <div class="result-legend">
                         <div><span class="legend-dot success"></span><span>Đạt</span><strong>@Model.SoKetQuaDat</strong></div>
                         <div><span class="legend-dot danger"></span><span>Không đạt</span><strong>@Model.SoKetQuaKhongDat</strong></div>
